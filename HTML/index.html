@@ -12,10 +12,11 @@
     <style>
         :root {
             --bg-dark: #070707;
-            --sidebar-bg: #0f0f0f;
-            --card-bg: #141414;
+            --sidebar-bg: rgba(15, 15, 15, 0.95);
+            --card-bg: rgba(20, 20, 20, 0.8);
             --accent-blue: #3b82f6;
-            --accent-purple: #8b5cf6;
+            --accent-gold: #fbbf24;
+            --accent-orange: #f59e0b;
             --text-main: #ffffff;
             --text-dim: #a0a0a0;
             --cubic-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -31,9 +32,13 @@
             height: 100vh;
             width: 100vw;
             overflow: hidden;
+            /* Wallpaper applied to main body background as well */
+            background-image: url('https://raw.githubusercontent.com/Numberoneguy/EaglerCraftX-Suite/main/Assets/HomeScreen.jpg');
+            background-size: cover;
+            background-position: center;
         }
 
-        /* --- SPLASH SCREEN WITH BLURRED WALLPAPER --- */
+        /* --- SPLASH SCREEN --- */
         #splash-screen {
             position: fixed;
             top: 0; left: 0;
@@ -44,78 +49,53 @@
             justify-content: center;
             align-items: center;
             z-index: 1000;
-            transition: opacity 0.6s ease, visibility 0.6s;
-            overflow: hidden;
+            transition: opacity 0.8s ease, visibility 0.8s;
         }
 
-        /* Background Layer for Wallpaper and Blur */
         #splash-screen::before {
             content: "";
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            /* Using the raw link to ensure the image loads */
             background-image: url('https://raw.githubusercontent.com/Numberoneguy/EaglerCraftX-Suite/main/Assets/HomeScreen.jpg');
             background-size: cover;
             background-position: center;
-            filter: blur(8px); /* 35% equivalent blur intensity */
-            opacity: 0.6; /* Slight darkening to make text pop */
+            filter: blur(12px); /* 35% Blur Intensity */
+            opacity: 0.5;
             z-index: -1;
         }
 
         .splash-content {
             text-align: center;
             animation: slideUpFade 1.2s var(--cubic-out) forwards;
-            position: relative;
-            z-index: 1;
         }
 
         .gradient-title {
             font-size: clamp(40px, 8vw, 85px);
             font-weight: 900;
-            background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple));
+            background: linear-gradient(45deg, var(--accent-blue), #8b5cf6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             letter-spacing: -4px;
-            filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.8)); /* Added shadow for readability */
+            filter: drop-shadow(0 0 30px rgba(0, 0, 0, 0.5));
         }
 
-        #random-tip {
-            color: var(--text-main); /* Changed to white for better visibility on wallpaper */
-            font-size: 18px;
-            margin-bottom: 40px;
-            font-weight: 400;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .enter-btn {
-            padding: 16px 45px;
-            border: 1px solid #333;
-            background: rgba(17, 17, 17, 0.9); /* Slight transparency */
-            color: white;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 700;
-            text-transform: uppercase;
-            transition: 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
-        .enter-btn:hover { border-color: var(--accent-blue); background: white; color: black; }
-
-        /* --- ANIMATION ENGINE --- */
+        /* --- ANIMATIONS --- */
         @keyframes slideUpFade {
             0% { opacity: 0; transform: translateY(50px); }
             100% { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes fadeInOnly {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
+        @keyframes goldShimmer {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        .fade-only { opacity: 0; animation: fadeInOnly 0.8s var(--cubic-out) forwards; }
-        .slide-up-static { opacity: 0; transform: translateY(40px); animation: slideUpFade 1s var(--cubic-out) forwards; }
+        .fade-only { opacity: 0; animation: fadeIn 0.8s var(--cubic-out) forwards; }
+        .slide-up-static { opacity: 0; transform: translateY(30px); animation: slideUpFade 1s var(--cubic-out) forwards; }
+        @keyframes fadeIn { to { opacity: 1; } }
 
         .d1 { animation-delay: 0.1s; }
         .d2 { animation-delay: 0.2s; }
@@ -123,44 +103,79 @@
         .d4 { animation-delay: 0.4s; }
         .d5 { animation-delay: 0.5s; }
 
-        /* --- DASHBOARD LAYOUT --- */
+        /* --- SIDEBAR --- */
         aside {
-            width: 260px;
+            width: 280px; /* Wider for more space */
             background: var(--sidebar-bg);
-            border-right: 1px solid #1a1a1a;
+            border-right: 1px solid rgba(255,255,255,0.05);
             display: flex;
             flex-direction: column;
-            padding: 40px 24px;
+            padding: 50px 30px;
             height: 100vh;
             flex-shrink: 0;
+            backdrop-filter: blur(20px);
         }
 
-        .logo-text { font-size: 20px; font-weight: 900; color: white; text-decoration: none; margin-bottom: 50px; }
-        .logo-text span { color: var(--accent-blue); }
+        /* NEW: Gold & Orange Animated Title */
+        .logo-text { 
+            font-size: 22px; 
+            font-weight: 900; 
+            text-decoration: none; 
+            margin-bottom: 60px; 
+            background: linear-gradient(-45deg, #fbbf24, #f59e0b, #d97706, #fbbf24);
+            background-size: 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: goldShimmer 4s infinite linear;
+            letter-spacing: -0.5px;
+        }
 
-        nav ul { list-style: none; }
-        nav li { margin-bottom: 10px; }
-        nav a { text-decoration: none; color: var(--text-dim); font-size: 14px; display: block; padding: 12px; border-radius: 8px; transition: 0.2s; }
-        nav a:hover, nav a.active { background: #1a1a1a; color: white; border-left: 3px solid var(--accent-blue); }
+        nav li { margin-bottom: 15px; list-style: none; }
+        nav a { 
+            text-decoration: none; color: var(--text-dim); font-size: 15px; 
+            display: block; padding: 14px 18px; border-radius: 12px; transition: 0.3s; 
+        }
+        nav a:hover, nav a.active { background: rgba(255,255,255,0.05); color: white; transform: translateX(5px); }
 
-        main { flex-grow: 1; padding: 60px; overflow-y: auto; height: 100vh; }
+        /* --- MAIN --- */
+        main { 
+            flex-grow: 1; 
+            padding: 80px; 
+            overflow-y: auto; 
+            height: 100vh; 
+            background: rgba(0, 0, 0, 0.4); /* Dark overlay to see tools clearly */
+            backdrop-filter: blur(10px); /* Secondary blur for content area */
+        }
         
         .search-bar {
-            width: 100%; max-width: 500px;
-            background: #111; border: 1px solid #222;
-            padding: 18px; border-radius: 12px; color: white; margin-bottom: 60px; outline: none;
+            width: 100%; max-width: 600px;
+            background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1);
+            padding: 20px 24px; border-radius: 16px; color: white; margin-bottom: 80px; outline: none;
+            font-size: 16px;
         }
 
-        .category-title { color: var(--accent-blue); font-size: 12px; letter-spacing: 2px; margin-bottom: 25px; font-weight: 800; text-transform: uppercase; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+        .category-title { color: var(--accent-blue); font-size: 13px; letter-spacing: 2px; margin-bottom: 35px; font-weight: 800; text-transform: uppercase; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 30px; }
 
         .card {
-            background: var(--card-bg); border: 1px solid #1a1a1a;
-            border-radius: 16px; padding: 26px; display: flex; align-items: center; gap: 20px;
-            text-decoration: none; color: inherit; transition: 0.3s ease;
+            background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 20px; padding: 35px; display: flex; align-items: center; gap: 25px;
+            text-decoration: none; color: inherit; transition: 0.4s var(--cubic-out);
+            backdrop-filter: blur(5px);
         }
-        .card:hover { border-color: var(--accent-blue); transform: translateY(-4px); background: #1a1a1a; }
-        .icon-box { width: 52px; height: 52px; border-radius: 12px; background: #222; flex-shrink: 0; }
+        .card:hover { border-color: var(--accent-blue); transform: translateY(-8px); background: rgba(30, 30, 30, 0.9); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+        
+        .icon-box { width: 60px; height: 60px; border-radius: 15px; background: #222; flex-shrink: 0; }
+        
+        .card h3 { font-size: 20px; margin-bottom: 6px; }
+        .card p { color: var(--text-dim); font-size: 14px; }
+
+        .enter-btn {
+            padding: 18px 50px; border: none; background: white; color: black;
+            border-radius: 14px; cursor: pointer; font-weight: 800; text-transform: uppercase;
+            transition: 0.3s;
+        }
+        .enter-btn:hover { background: var(--accent-blue); color: white; transform: translateY(-3px); }
     </style>
 </head>
 <body>
@@ -168,14 +183,14 @@
     <div id="splash-screen">
         <div class="splash-content">
             <h1 class="gradient-title">EaglerCraft Suite</h1>
-            <p id="random-tip"></p>
+            <p id="random-tip" style="color: white; margin-bottom: 40px; text-shadow: 0 2px 10px rgba(0,0,0,0.5);"></p>
             <button class="enter-btn" onclick="closeSplash()">Enter Suite</button>
         </div>
     </div>
 
     <aside>
         <div class="fade-only d1">
-            <a href="index.html" class="logo-text">EAGLER<span>SUITE</span></a>
+            <a href="index.html" class="logo-text">EAGLERSUITE</a>
         </div>
         <nav>
             <ul>
@@ -189,20 +204,20 @@
 
     <main>
         <header class="fade-only d1">
-            <h1 style="font-size: 38px; font-weight: 900; margin-bottom: 10px;">Resources</h1>
-            <p style="color: var(--text-dim); margin-bottom: 40px;">Official toolkit for EaglerCraft Suite users.</p>
+            <h1 style="font-size: 50px; font-weight: 900; margin-bottom: 15px;">Resources</h1>
+            <p style="color: var(--text-dim); margin-bottom: 60px; font-size: 18px;">Official toolkit for EaglerCraft Suite users.</p>
         </header>
 
         <div class="slide-up-static d2">
-            <input type="text" id="mainSearch" class="search-bar" placeholder="Filter tools or clients...">
+            <input type="text" id="mainSearch" class="search-bar" placeholder="Search for tools, clients, or editors...">
         </div>
 
         <section class="category-section">
             <h2 class="category-title fade-only d3">Core Tools</h2>
             <div class="grid">
                 <a href="https://github.com/Querz/mcaselector/releases/download/2.6.1/MCA_Selector_Setup.exe" class="card slide-up-static d4" data-tags="mca selector world editor chunks">
-                    <div class="icon-box" style="border: 2px solid #f97316;"></div>
-                    <div class="card-info"><h3>MCA Selector</h3><p>Advanced World/Chunk Editing</p></div>
+                    <div class="icon-box" style="border: 2px solid var(--accent-orange);"></div>
+                    <div class="card-info"><h3>MCA Selector</h3><p>Advanced World & Chunk Editing</p></div>
                 </a>
                 <a href="editor.html" class="card slide-up-static d5" data-tags="nbt editor">
                     <div class="icon-box" style="border: 2px solid #10b981;"></div>
@@ -216,24 +231,22 @@
         const tips = [
             "Tip: Skeletons can't see you through vines!",
             "Tip: Use a wet sponge in the Nether to dry it instantly.",
-            "Tip: Beds explode in the Nether. Be careful!",
-            "Tip: Blazes are weak to snowballs."
+            "Tip: Efficiency V gold picks are the fastest tools.",
+            "Tip: Beds explode in the Nether. Be careful!"
         ];
 
         window.onload = () => {
-            const tipElement = document.getElementById('random-tip');
-            tipElement.innerText = tips[Math.floor(Math.random() * tips.length)];
+            document.getElementById('random-tip').innerText = tips[Math.floor(Math.random() * tips.length)];
         };
 
         function closeSplash() {
             const splash = document.getElementById('splash-screen');
             splash.style.opacity = '0';
-            setTimeout(() => { splash.style.visibility = 'hidden'; }, 600);
+            setTimeout(() => { splash.style.visibility = 'hidden'; }, 800);
         }
 
         const searchInput = document.getElementById('mainSearch');
         const cards = document.querySelectorAll('.card');
-
         searchInput.addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase();
             cards.forEach(card => {
