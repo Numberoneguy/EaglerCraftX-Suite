@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EaglerCraft Suite</title>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
@@ -137,7 +138,6 @@
         
         .icon-box { width: 52px; height: 52px; border-radius: 12px; background: #222; flex-shrink: 0; }
 
-        /* Secret Joke */
         .secret-joke { margin-top: auto; color: var(--sidebar-bg); font-size: 10px; user-select: all; text-align: center; }
         .secret-joke::selection { background: white; color: black; }
     </style>
@@ -203,7 +203,6 @@
     </main>
 
     <script>
-        // 1. Random Minecraft Tips
         const tips = [
             "Tip: Skeletons can't see you through vines!",
             "Tip: Use a wet sponge in the Nether to dry it instantly.",
@@ -220,16 +219,12 @@
             tipElement.innerText = randomTip;
         };
 
-        // 2. Close Splash Screen
         function closeSplash() {
             const splash = document.getElementById('splash-screen');
             splash.style.opacity = '0';
-            setTimeout(() => { 
-                splash.style.visibility = 'hidden'; 
-            }, 600);
+            setTimeout(() => { splash.style.visibility = 'hidden'; }, 600);
         }
 
-        // 3. Search Logic
         const searchInput = document.getElementById('mainSearch');
         const cards = document.querySelectorAll('.card');
         searchInput.addEventListener('input', (e) => {
