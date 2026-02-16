@@ -18,19 +18,22 @@
             --accent-purple: #8b5cf6;
             --text-main: #ffffff;
             --text-dim: #a0a0a0;
+            --cubic: cubic-bezier(0.22, 1, 0.36, 1); /* Professional Cubic-Out */
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
+        
         body { 
             background-color: var(--bg-dark); 
             color: var(--text-main); 
             font-family: 'Inter', sans-serif;
             display: flex;
             height: 100vh;
+            width: 100vw;
             overflow: hidden;
         }
 
-        /* --- HOME / SPLASH SCREEN --- */
+        /* --- SPLASH SCREEN --- */
         #splash-screen {
             position: fixed;
             top: 0; left: 0;
@@ -44,18 +47,8 @@
             transition: opacity 0.6s ease, visibility 0.6s;
         }
 
-        .splash-content {
-            text-align: center;
-            animation: pop-up 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        @keyframes pop-up {
-            0% { transform: scale(0.5); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
         .gradient-title {
-            font-size: 85px;
+            font-size: clamp(40px, 8vw, 85px);
             font-weight: 900;
             background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple));
             -webkit-background-clip: text;
@@ -70,13 +63,6 @@
             50% { filter: drop-shadow(0 0 35px rgba(139, 92, 246, 0.6)); transform: scale(1.03); }
         }
 
-        #random-tip {
-            color: var(--text-dim);
-            font-size: 18px;
-            margin-bottom: 40px;
-            font-weight: 400;
-        }
-
         .enter-btn {
             padding: 16px 45px;
             border: 1px solid #333;
@@ -86,17 +72,33 @@
             cursor: pointer;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
+            transition: 0.3s;
         }
-        .enter-btn:hover { 
-            border-color: var(--accent-blue); 
-            background: white; 
-            color: black;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        .enter-btn:hover { border-color: var(--accent-blue); background: white; color: black; }
+
+        /* --- ANIMATIONS --- */
+        .fade-in {
+            opacity: 0;
+            animation: pureFade 0.8s var(--cubic) forwards;
         }
 
-        /* --- DASHBOARD GUI --- */
+        .pop-slide {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: popSlide 0.8s var(--cubic) forwards;
+        }
+
+        @keyframes pureFade { to { opacity: 1; } }
+        @keyframes popSlide { to { opacity: 1; transform: translateY(0); } }
+
+        /* Staggered Delays */
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        .delay-5 { animation-delay: 0.5s; }
+
+        /* --- GUI ELEMENTS --- */
         aside {
             width: 260px;
             background: var(--sidebar-bg);
@@ -105,15 +107,14 @@
             flex-direction: column;
             padding: 40px 24px;
             height: 100vh;
-            flex-shrink: 0;
         }
 
         .logo-text { font-size: 20px; font-weight: 900; color: white; text-decoration: none; margin-bottom: 50px; }
-        .logo-text span { color: var(--accent-blue); }
-
-        nav ul { list-style: none; }
-        nav li { margin-bottom: 10px; }
-        nav a { text-decoration: none; color: var(--text-dim); font-size: 14px; display: block; padding: 12px; border-radius: 8px; transition: 0.2s; }
+        nav li { margin-bottom: 10px; list-style: none; }
+        nav a { 
+            text-decoration: none; color: var(--text-dim); font-size: 14px; 
+            display: block; padding: 12px; border-radius: 8px; transition: 0.2s; 
+        }
         nav a:hover, nav a.active { background: #1a1a1a; color: white; border-left: 3px solid var(--accent-blue); }
 
         main { flex-grow: 1; padding: 60px; overflow-y: auto; height: 100vh; }
@@ -122,9 +123,7 @@
             width: 100%; max-width: 500px;
             background: #111; border: 1px solid #222;
             padding: 18px; border-radius: 12px; color: white; margin-bottom: 60px; outline: none;
-            font-family: 'Inter', sans-serif;
         }
-        .search-bar:focus { border-color: var(--accent-blue); }
 
         .category-title { color: var(--accent-blue); font-size: 12px; letter-spacing: 2px; margin-bottom: 25px; font-weight: 800; text-transform: uppercase; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
@@ -135,88 +134,62 @@
             text-decoration: none; color: inherit; transition: 0.3s;
         }
         .card:hover { border-color: var(--accent-blue); transform: translateY(-5px); background: #1a1a1a; }
-        
         .icon-box { width: 52px; height: 52px; border-radius: 12px; background: #222; flex-shrink: 0; }
 
-        .secret-joke { margin-top: auto; color: var(--sidebar-bg); font-size: 10px; user-select: all; text-align: center; }
-        .secret-joke::selection { background: white; color: black; }
+        .secret-joke { margin-top: auto; color: var(--sidebar-bg); font-size: 10px; text-align: center; }
     </style>
 </head>
 <body>
 
     <div id="splash-screen">
-        <div class="splash-content">
-            <h1 class="gradient-title">EaglerCraft Suite</h1>
-            <p id="random-tip">Fetching Minecraft Secrets...</p>
-            <button class="enter-btn" onclick="closeSplash()">Enter Suite</button>
-        </div>
+        <h1 class="gradient-title">EaglerCraft Suite</h1>
+        <p id="random-tip" style="color: var(--text-dim); margin-bottom: 40px;">Fetching Secrets...</p>
+        <button class="enter-btn" onclick="closeSplash()">Enter Suite</button>
     </div>
 
     <aside>
-        <a href="index.html" class="logo-text">EAGLER<span>SUITE</span></a>
+        <div class="fade-in delay-1">
+            <a href="index.html" class="logo-text">EAGLER<span>SUITE</span></a>
+        </div>
         <nav>
             <ul>
-                <li><a href="#" class="active">Dashboard</a></li>
-                <li><a href="#clients">Game Clients</a></li>
-                <li><a href="Eaglercraft-Binary-Tools.html">Binary Tools</a></li>
-                <li><a href="editor.html">NBT Editors</a></li>
+                <li class="fade-in delay-2"><a href="#" class="active">Dashboard</a></li>
+                <li class="fade-in delay-3"><a href="#clients">Game Clients</a></li>
+                <li class="fade-in delay-4"><a href="Eaglercraft-Binary-Tools.html">Binary Tools</a></li>
+                <li class="fade-in delay-5"><a href="editor.html">NBT Editors</a></li>
             </ul>
         </nav>
-        <div class="secret-joke">Why did the enderman cross the road? To teleport to the other side.</div>
     </aside>
 
     <main>
-        <header>
+        <header class="fade-in delay-1">
             <h1 style="font-size: 38px; font-weight: 900; margin-bottom: 10px;">Resources</h1>
             <p style="color: var(--text-dim); margin-bottom: 40px;">Official toolkit for EaglerCraft Suite users.</p>
         </header>
 
-        <input type="text" id="mainSearch" class="search-bar" placeholder="Filter tools or clients...">
+        <div class="pop-slide delay-2">
+            <input type="text" id="mainSearch" class="search-bar" placeholder="Filter tools or clients...">
+        </div>
 
-        <section class="category-section" id="tools">
-            <h2 class="category-title">Core Tools</h2>
+        <section class="category-section">
+            <h2 class="category-title fade-in delay-3">Core Tools</h2>
             <div class="grid">
-                <a href="Eaglercraft-Binary-Tools.html" class="card" data-tags="binary tools epk">
+                <a href="Eaglercraft-Binary-Tools.html" class="card pop-slide delay-4">
                     <div class="icon-box" style="border: 2px solid var(--accent-blue);"></div>
                     <div class="card-info"><h3>Binary Tools</h3><p>Compile/Decompile EPK Files</p></div>
                 </a>
-                <a href="editor.html" class="card" data-tags="nbt editor">
+                <a href="editor.html" class="card pop-slide delay-5">
                     <div class="icon-box" style="border: 2px solid #10b981;"></div>
                     <div class="card-info"><h3>Web NBT Editor</h3><p>Direct world data modification</p></div>
-                </a>
-            </div>
-        </section>
-
-        <section class="category-section" id="clients" style="margin-top: 60px;">
-            <h2 class="category-title">Featured Clients</h2>
-            <div class="grid">
-                <a href="#" class="card" data-tags="pixel client">
-                    <div class="icon-box" style="border: 2px solid #f59e0b;"></div>
-                    <div class="card-info"><h3>Pixel Client</h3><p>High Performance 1.8.8</p></div>
-                </a>
-                <a href="#" class="card" data-tags="wurstx hack">
-                    <div class="icon-box" style="border: 2px solid #ef4444;"></div>
-                    <div class="card-info"><h3>WurstX</h3><p>Classic Hack/Utility Client</p></div>
                 </a>
             </div>
         </section>
     </main>
 
     <script>
-        const tips = [
-            "Tip: Skeletons can't see you through vines!",
-            "Tip: Use a wet sponge in the Nether to dry it instantly.",
-            "Tip: Efficiency V on a gold pick is the fastest mining speed.",
-            "Tip: You can use a furnace as a cheap light source.",
-            "Tip: Zombified Piglins won't attack unless you hit them first.",
-            "Tip: Beds explode in the Nether. Be careful!",
-            "Tip: Sweet berry bushes slow down mobs and players."
-        ];
-
+        const tips = ["Tip: Never dig straight down!", "Tip: Skeletons can't see through vines!", "Tip: Beds explode in the Nether!"];
         window.onload = () => {
-            const tipElement = document.getElementById('random-tip');
-            const randomTip = tips[Math.floor(Math.random() * tips.length)];
-            tipElement.innerText = randomTip;
+            document.getElementById('random-tip').innerText = tips[Math.floor(Math.random() * tips.length)];
         };
 
         function closeSplash() {
@@ -230,8 +203,7 @@
         searchInput.addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase();
             cards.forEach(card => {
-                const text = card.innerText.toLowerCase() + card.getAttribute('data-tags');
-                card.style.display = text.includes(query) ? 'flex' : 'none';
+                card.style.display = card.innerText.toLowerCase().includes(query) ? 'flex' : 'none';
             });
         });
     </script>
