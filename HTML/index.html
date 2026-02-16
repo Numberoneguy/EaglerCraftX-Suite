@@ -4,12 +4,125 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Terminal | EaglerCraftX Suite</title>
-    <link rel="stylesheet" href="style.css?v=2">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark: #070707;
+            --sidebar-bg: #0f0f0f;
+            --card-bg: #141414;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --text-main: #ffffff;
+            --text-dim: #a0a0a0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            background-color: var(--bg-dark); 
+            color: var(--text-main); 
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- HOME / SPLASH SCREEN --- */
+        #splash-screen {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: var(--bg-dark);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.8s ease, visibility 0.8s;
+        }
+
+        .gradient-title {
+            font-size: 80px;
+            font-weight: 900;
+            background: linear-gradient(to right, var(--accent-blue), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            letter-spacing: -3px;
+        }
+
+        #random-tip {
+            color: var(--text-dim);
+            font-size: 18px;
+            font-style: italic;
+            margin-bottom: 40px;
+            height: 24px;
+        }
+
+        .enter-btn {
+            padding: 15px 40px;
+            border: 2px solid #333;
+            background: transparent;
+            color: white;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+        .enter-btn:hover { background: white; color: black; transform: scale(1.05); }
+
+        /* --- DASHBOARD GUI --- */
+        aside {
+            width: 260px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid #1a1a1a;
+            display: flex;
+            flex-direction: column;
+            padding: 40px 24px;
+            height: 100vh;
+        }
+
+        .logo-text { font-size: 20px; font-weight: 900; color: white; text-decoration: none; margin-bottom: 50px; }
+        .logo-text span { color: var(--accent-blue); }
+
+        nav ul { list-style: none; }
+        nav li { margin-bottom: 10px; }
+        nav a { text-decoration: none; color: var(--text-dim); font-size: 14px; display: block; padding: 12px; border-radius: 8px; transition: 0.2s; }
+        nav a:hover, nav a.active { background: #1a1a1a; color: white; }
+
+        main { flex-grow: 1; padding: 60px; overflow-y: auto; height: 100vh; }
+        .search-bar {
+            width: 100%; max-width: 500px;
+            background: #111; border: 1px solid #222;
+            padding: 16px; border-radius: 12px; color: white; margin-bottom: 50px; outline: none;
+        }
+
+        .category-title { color: var(--accent-blue); font-size: 12px; letter-spacing: 2px; margin-bottom: 25px; font-weight: 800; text-transform: uppercase; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+
+        .card {
+            background: var(--card-bg); border: 1px solid #1a1a1a;
+            border-radius: 16px; padding: 24px; display: flex; align-items: center; gap: 20px;
+            text-decoration: none; color: inherit; transition: 0.2s;
+        }
+        .card:hover { border-color: var(--accent-blue); transform: translateY(-5px); background: #1a1a1a; }
+        .icon-box { width: 48px; height: 48px; border-radius: 12px; background: #222; flex-shrink: 0; }
+
+        /* Secret Joke */
+        .secret-joke { margin-top: auto; color: var(--sidebar-bg); font-size: 10px; user-select: all; text-align: center; }
+        .secret-joke::selection { background: white; color: black; }
+    </style>
 </head>
 <body>
+
+    <div id="splash-screen">
+        <h1 class="gradient-title">EaglerCraftX Suite</h1>
+        <p id="random-tip">Loading Minecraft Tip...</p>
+        <button class="enter-btn" onclick="closeSplash()">ENTER TERMINAL</button>
+    </div>
+
     <aside>
         <a href="index.html" class="logo-text">TERMINAL<span>SUITE</span></a>
         <nav>
@@ -22,17 +135,15 @@
         </nav>
         <div class="secret-joke">Why don't skeletons fight each other? They don't have the guts.</div>
     </aside>
+
     <main>
-        <header>
-            <h1 style="font-size: 36px; margin-bottom: 10px;">Terminal Hub</h1>
-            <p style="color: var(--text-dim); margin-bottom: 30px;">Professional Eaglercraft Resource Suite.</p>
-            <input type="text" id="mainSearch" class="search-bar" placeholder="Search...">
-        </header>
+        <input type="text" id="mainSearch" class="search-bar" placeholder="Search resources...">
+
         <section class="category-section">
-            <h2 style="color: var(--accent); font-size: 12px; letter-spacing: 2px; margin-bottom: 20px;">CORE TOOLS</h2>
+            <h2 class="category-title">Core Tools</h2>
             <div class="grid">
                 <a href="Eaglercraft-Binary-Tools.html" class="card" data-tags="binary tools epk">
-                    <div class="icon-box" style="border: 2px solid #3b82f6;"></div>
+                    <div class="icon-box" style="border: 2px solid var(--accent-blue);"></div>
                     <div class="card-info"><h3>Binary Tools</h3><p>Compile/Decompile EPK</p></div>
                 </a>
                 <a href="editor.html" class="card" data-tags="nbt editor">
@@ -41,8 +152,9 @@
                 </a>
             </div>
         </section>
+
         <section class="category-section" style="margin-top: 50px;">
-            <h2 style="color: var(--accent); font-size: 12px; letter-spacing: 2px; margin-bottom: 20px;">CLIENTS</h2>
+            <h2 class="category-title">Clients</h2>
             <div class="grid">
                 <a href="#" class="card" data-tags="pixel client">
                     <div class="icon-box" style="border: 2px solid #f59e0b;"></div>
@@ -50,12 +162,38 @@
                 </a>
                 <a href="#" class="card" data-tags="wurstx hack">
                     <div class="icon-box" style="border: 2px solid #ef4444;"></div>
-                    <div class="card-info"><h3>WurstX</h3><p>Utility Client</p></div>
+                    <div class="card-info"><h3>WurstX</h3><p>Utility/Cheat Client</p></div>
                 </a>
             </div>
         </section>
     </main>
+
     <script>
+        // 1. Random Minecraft Tips
+        const tips = [
+            "Tip: Never dig straight down!",
+            "Tip: Gold picks mine fastest, but break easiest.",
+            "Tip: Use silk touch to get grass blocks.",
+            "Tip: Phantoms appear if you don't sleep for 3 days.",
+            "Tip: Blazes are weak to snowballs.",
+            "Tip: Always carry a water bucket for MLG saves.",
+            "Tip: Punching trees is the first step to glory."
+        ];
+
+        window.onload = () => {
+            const tipElement = document.getElementById('random-tip');
+            const randomTip = tips[Math.floor(Math.random() * tips.length)];
+            tipElement.innerText = randomTip;
+        };
+
+        // 2. Close Splash Screen
+        function closeSplash() {
+            const splash = document.getElementById('splash-screen');
+            splash.style.opacity = '0';
+            setTimeout(() => { splash.style.visibility = 'hidden'; }, 800);
+        }
+
+        // 3. Search Logic
         const searchInput = document.getElementById('mainSearch');
         const cards = document.querySelectorAll('.card');
         searchInput.addEventListener('input', (e) => {
