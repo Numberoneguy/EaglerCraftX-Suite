@@ -47,6 +47,12 @@
             transition: opacity 0.6s ease, visibility 0.6s;
         }
 
+        .splash-content {
+            text-align: center;
+            /* New Slide-up and Fade animation for the whole splash box */
+            animation: slideUpFade 1s var(--cubic-out) forwards;
+        }
+
         .gradient-title {
             font-size: clamp(40px, 8vw, 85px);
             font-weight: 900;
@@ -55,13 +61,15 @@
             -webkit-text-fill-color: transparent;
             margin-bottom: 15px;
             letter-spacing: -4px;
-            /* Keeps the splash title glowing until they enter */
-            animation: splash-glow 3s infinite ease-in-out;
+            /* Glow removed so it stays static and clean */
+            filter: drop-shadow(0 0 15px rgba(59, 130, 246, 0.3));
         }
 
-        @keyframes splash-glow {
-            0%, 100% { filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.2)); }
-            50% { filter: drop-shadow(0 0 30px rgba(139, 92, 246, 0.4)); }
+        #random-tip {
+            color: var(--text-dim);
+            font-size: 18px;
+            margin-bottom: 40px;
+            font-weight: 400;
         }
 
         .enter-btn {
@@ -79,38 +87,38 @@
 
         /* --- ANIMATION ENGINE --- */
         
-        /* Sidebar/Text: Pure Opacity Fade */
+        /* Sidebars/Text: Pure Fade */
         .fade-only {
             opacity: 0;
             animation: fadeIn 0.8s var(--cubic-out) forwards;
         }
 
-        /* Cards/UI: Pop Up (Slide) and Fade */
-        .pop-up-static {
+        /* Main GUI: Slide up and Fade (No Scaling) */
+        .slide-up-static {
             opacity: 0;
-            transform: translateY(30px);
-            animation: popUpStatic 0.9s var(--cubic-out) forwards;
+            transform: translateY(40px);
+            animation: slideUpFade 0.9s var(--cubic-out) forwards;
         }
 
         @keyframes fadeIn {
             to { opacity: 1; }
         }
 
-        @keyframes popUpStatic {
+        @keyframes slideUpFade {
             to { 
                 opacity: 1; 
                 transform: translateY(0); 
             }
         }
 
-        /* Staggered Timing */
+        /* Staggered Timing Delays */
         .d1 { animation-delay: 0.1s; }
         .d2 { animation-delay: 0.2s; }
         .d3 { animation-delay: 0.3s; }
         .d4 { animation-delay: 0.4s; }
         .d5 { animation-delay: 0.5s; }
 
-        /* --- SIDEBAR --- */
+        /* --- GUI LAYOUT --- */
         aside {
             width: 260px;
             background: var(--sidebar-bg);
@@ -133,7 +141,6 @@
         }
         nav a:hover, nav a.active { background: #1a1a1a; color: white; border-left: 3px solid var(--accent-blue); }
 
-        /* --- MAIN --- */
         main { flex-grow: 1; padding: 60px; overflow-y: auto; height: 100vh; }
         
         .search-bar {
@@ -151,7 +158,6 @@
             border-radius: 16px; padding: 26px; display: flex; align-items: center; gap: 20px;
             text-decoration: none; color: inherit; transition: 0.3s ease;
         }
-        /* Hover stays, but notice there's no "pulsing" anymore */
         .card:hover { border-color: var(--accent-blue); transform: translateY(-4px); background: #1a1a1a; }
         
         .icon-box { width: 52px; height: 52px; border-radius: 12px; background: #222; flex-shrink: 0; }
@@ -160,9 +166,9 @@
 <body>
 
     <div id="splash-screen">
-        <div style="text-align: center;">
+        <div class="splash-content">
             <h1 class="gradient-title">EaglerCraft Suite</h1>
-            <p id="random-tip" style="color: var(--text-dim); margin-bottom: 40px;"></p>
+            <p id="random-tip"></p>
             <button class="enter-btn" onclick="closeSplash()">Enter Suite</button>
         </div>
     </div>
@@ -187,18 +193,18 @@
             <p style="color: var(--text-dim); margin-bottom: 40px;">Official toolkit for EaglerCraft Suite users.</p>
         </header>
 
-        <div class="pop-up-static d2">
+        <div class="slide-up-static d2">
             <input type="text" id="mainSearch" class="search-bar" placeholder="Filter tools or clients...">
         </div>
 
         <section class="category-section">
             <h2 class="category-title fade-only d3">Core Tools</h2>
             <div class="grid">
-                <a href="Eaglercraft-Binary-Tools.html" class="card pop-up-static d4">
-                    <div class="icon-box" style="border: 2px solid var(--accent-blue);"></div>
-                    <div class="card-info"><h3>Binary Tools</h3><p>Compile/Decompile EPK Files</p></div>
+                <a href="https://github.com/Querz/mcaselector/releases/download/2.6.1/MCA_Selector_Setup.exe" class="card slide-up-static d4" data-tags="mca selector world editor chunks">
+                    <div class="icon-box" style="border: 2px solid #f97316;"></div>
+                    <div class="card-info"><h3>MCA Selector</h3><p>Advanced World/Chunk Editing</p></div>
                 </a>
-                <a href="editor.html" class="card pop-up-static d5">
+                <a href="editor.html" class="card slide-up-static d5" data-tags="nbt editor">
                     <div class="icon-box" style="border: 2px solid #10b981;"></div>
                     <div class="card-info"><h3>Web NBT Editor</h3><p>Direct world data modification</p></div>
                 </a>
@@ -206,46 +212,43 @@
         </section>
     </main>
 
-<script>
-    // 1. Random Minecraft Tips
-    const tips = [
-        "Tip: Skeletons can't see you through vines!",
-        "Tip: Use a wet sponge in the Nether to dry it.",
-        "Tip: Beds explode in the Nether!",
-        "Tip: Blazes are weak to snowballs."
-    ];
+    <script>
+        // 1. Random Tips
+        const tips = [
+            "Tip: Skeletons can't see you through vines!",
+            "Tip: Use a wet sponge in the Nether to dry it instantly.",
+            "Tip: Beds explode in the Nether. Be careful!",
+            "Tip: Blazes are weak to snowballs."
+        ];
 
-    window.onload = () => {
-        document.getElementById('random-tip').innerText = tips[Math.floor(Math.random() * tips.length)];
-    };
+        window.onload = () => {
+            const tipElement = document.getElementById('random-tip');
+            tipElement.innerText = tips[Math.floor(Math.random() * tips.length)];
+        };
 
-    function closeSplash() {
-        const splash = document.getElementById('splash-screen');
-        splash.style.opacity = '0';
-        setTimeout(() => { splash.style.visibility = 'hidden'; }, 600);
-    }
+        // 2. Clear Splash
+        function closeSplash() {
+            const splash = document.getElementById('splash-screen');
+            splash.style.opacity = '0';
+            setTimeout(() => { splash.style.visibility = 'hidden'; }, 600);
+        }
 
-    // 2. FIXED SEARCH LOGIC
-    const searchInput = document.getElementById('mainSearch');
-    const cards = document.querySelectorAll('.card');
+        // 3. Optimized Search (No HTML Leak)
+        const searchInput = document.getElementById('mainSearch');
+        const cards = document.querySelectorAll('.card');
 
-    searchInput.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase();
-        
-        cards.forEach(card => {
-            // We only look at the H3 title and the data-tags attribute
-            const title = card.querySelector('h3').innerText.toLowerCase();
-            const tags = card.getAttribute('data-tags').toLowerCase();
-            const description = card.querySelector('p').innerText.toLowerCase();
-            
-            // Check if search matches title, description, or tags
-            if (title.includes(query) || tags.includes(query) || description.includes(query)) {
-                card.style.display = 'flex';
-            } else {
-                card.style.display = 'none';
-            }
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            cards.forEach(card => {
+                const title = card.querySelector('h3').innerText.toLowerCase();
+                const tags = card.getAttribute('data-tags').toLowerCase();
+                if (title.includes(query) || tags.includes(query)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
         });
-    });
-</script>
+    </script>
 </body>
 </html>
