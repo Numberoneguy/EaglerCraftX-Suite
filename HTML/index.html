@@ -11,305 +11,174 @@
     
     <style>
         :root {
-            /* Panorama Assets */
-            --pano-0: url('https://raw.githubusercontent.com/Numberoneguy/EaglerCraftX-Suite/main/Assets/Start-Screen/panorama_0.png');
-            --pano-1: url('https://raw.githubusercontent.com/Numberoneguy/EaglerCraftX-Suite/main/Assets/Start-Screen/panorama_1.png');
-            --pano-2: url('https://raw.githubusercontent.com/Numberoneguy/EaglerCraftX-Suite/main/Assets/Start-Screen/panorama_2.png');
-            --pano-3: url('https://raw.githubusercontent.com/Numberoneguy/EaglerCraftX-Suite/main/Assets/Start-Screen/panorama_3.png');
-            --pano-4: url('https://raw.githubusercontent.com/Numberoneguy/EaglerCraftX-Suite/main/Assets/Start-Screen/panorama_4.png');
-            --pano-5: url('https://raw.githubusercontent.com/Numberoneguy/EaglerCraftX-Suite/main/Assets/Start-Screen/panorama_5.png');
+            /* Your Specific GitHub Assets */
+            --nx: url('https://raw.githubusercontent.com/Numberoneguy/EaglerCraftX-Suite/main/Assets/Start-Screen/nx.png');
+            --ny: url('https://raw.githubusercontent.com/Numberoneguy/EaglerCraftX-Suite/main/Assets/Start-Screen/ny.png');
+            --nz: url('https://raw.githubusercontent.com/Numberoneguy/EaglerCraftX-Suite/main/Assets/Start-Screen/nz.png');
+            --px: url('https://raw.githubusercontent.com/Numberoneguy/EaglerCraftX-Suite/main/Assets/Start-Screen/px.png');
+            --py: url('https://raw.githubusercontent.com/Numberoneguy/EaglerCraftX-Suite/main/Assets/Start-Screen/py.png');
+            --pz: url('https://raw.githubusercontent.com/Numberoneguy/EaglerCraftX-Suite/main/Assets/Start-Screen/pz.png');
             --overlay: url('https://raw.githubusercontent.com/Numberoneguy/EaglerCraftX-Suite/main/Assets/Start-Screen/panorama_overlay.png');
             
-            /* Theme Colors */
-            --sidebar-bg: rgba(15, 15, 15, 0.4);
+            /* UI Style */
+            --sidebar-bg: rgba(15, 15, 15, 0.5);
             --card-bg: rgba(255, 255, 255, 0.03);
-            --gui-border: 1px solid rgba(255, 255, 255, 0.15);
+            --gui-border: 1px solid rgba(255, 255, 255, 0.12);
             --accent-gold: #fbbf24;
-            --accent-orange: #f59e0b;
             --text-main: #ffffff;
             --text-dim: #a0a0a0;
-            --cubic-out: cubic-bezier(0.22, 1, 0.36, 1);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        
-        body { 
-            background-color: #000; 
-            color: var(--text-main); 
-            font-family: 'Inter', sans-serif;
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-            display: flex;
-        }
+        body { background-color: #000; color: white; font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden; }
 
-        /* --- 1. MINECRAFT 3D PANORAMA --- */
-        .panorama-viewport {
-            position: fixed;
-            inset: 0;
+        /* --- 1. THE 3D CUBE (Axis Mapping) --- */
+        .viewport {
+            position: fixed; inset: 0;
             perspective: 1000px;
-            overflow: hidden;
             z-index: -2;
         }
 
-        .panorama-cube {
-            position: absolute;
-            width: 100%; height: 100%;
+        .cube {
+            position: absolute; width: 100%; height: 100%;
             transform-style: preserve-3d;
             animation: panoRotate 120s infinite linear;
         }
 
         .face {
             position: absolute;
-            width: 101vw; height: 101vh; /* Slight overlap to hide seams */
+            width: 101vw; height: 101vh;
             top: -0.5vh; left: -0.5vw;
             background-size: cover;
             background-position: center;
-            filter: blur(4px); /* Minecraft Menu Blur */
+            filter: blur(4px);
             opacity: 0.7;
         }
 
-        /* Cube Face Mapping */
-        .f-back   { background-image: var(--pano-0); transform: rotateY(0deg) translateZ(-50vw); }
-        .f-bottom { background-image: var(--pano-1); transform: rotateX(-90deg) translateZ(-50vw); }
-        .f-front  { background-image: var(--pano-2); transform: rotateY(180deg) translateZ(-50vw); }
-        .f-left   { background-image: var(--pano-3); transform: rotateY(90deg) translateZ(-50vw); }
-        .f-right  { background-image: var(--pano-4); transform: rotateY(-90deg) translateZ(-50vw); }
-        .f-top    { background-image: var(--pano-5); transform: rotateX(90deg) translateZ(-50vw); }
+        /* Mapping Axes to 3D Space */
+        .f-px { background-image: var(--px); transform: rotateY(-90deg) translateZ(-50vw); } /* Positive X */
+        .f-nx { background-image: var(--nx); transform: rotateY(90deg) translateZ(-50vw); }  /* Negative X */
+        .f-py { background-image: var(--py); transform: rotateX(-90deg) translateZ(-50vw); } /* Positive Y */
+        .f-ny { background-image: var(--ny); transform: rotateX(90deg) translateZ(-50vw); }  /* Negative Y */
+        .f-pz { background-image: var(--pz); transform: rotateY(180deg) translateZ(-50vw); } /* Positive Z */
+        .f-nz { background-image: var(--nz); transform: rotateY(0deg) translateZ(-50vw); }   /* Negative Z */
 
         @keyframes panoRotate {
-            0% { transform: rotateY(0deg) rotateX(-5deg); }
-            100% { transform: rotateY(360deg) rotateX(-5deg); }
+            from { transform: rotateY(0deg) rotateX(-5deg); }
+            to { transform: rotateY(360deg) rotateX(-5deg); }
         }
 
-        /* Panorama Overlay (Vignette) */
-        .panorama-overlay {
-            position: fixed;
-            inset: 0;
+        .vignette {
+            position: fixed; inset: 0;
             background-image: var(--overlay);
             background-size: cover;
             z-index: -1;
             pointer-events: none;
         }
 
-        /* --- 2. START SCREEN (SPLASH) --- */
+        /* --- 2. START SCREEN (Hides GUI) --- */
         #splash {
-            position: fixed;
-            inset: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
+            position: fixed; inset: 0;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 3000;
             background: rgba(0,0,0,0.2);
-            transition: opacity 0.8s var(--cubic-out), visibility 0.8s;
+            transition: opacity 0.8s ease;
         }
 
-        .title-main {
-            font-size: clamp(40px, 8vw, 90px);
-            font-weight: 900;
-            letter-spacing: -4px;
-            margin-bottom: 20px;
-            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
+        .title-main { font-size: 80px; font-weight: 900; margin-bottom: 20px; text-shadow: 0 10px 30px rgba(0,0,0,0.5); }
 
         .enter-btn {
-            padding: 20px 65px;
-            background: #fff;
-            color: #000;
-            border: none;
-            border-radius: 50px;
-            font-weight: 900;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            padding: 20px 70px; background: #fff; color: #000; border: none;
+            border-radius: 50px; font-weight: 900; cursor: pointer; transition: 0.3s;
         }
-        .enter-btn:hover { transform: scale(1.1); background: var(--accent-gold); }
+        .enter-btn:hover { transform: scale(1.05); background: var(--accent-gold); }
 
-        /* --- 3. TRANSPARENT DASHBOARD GUI --- */
+        /* --- 3. THE GUI (Hidden by default) --- */
         #main-wrapper {
-            display: none; /* Hidden until Enter is clicked */
-            width: 100%;
-            height: 100%;
+            position: absolute; inset: 0;
+            display: none; /* Logic revealed by JS */
             opacity: 0;
-            transition: opacity 1.2s ease;
+            transition: opacity 1s ease;
         }
 
         aside {
-            width: 320px;
-            background: var(--sidebar-bg);
+            width: 320px; background: var(--sidebar-bg);
             border-right: var(--gui-border);
-            padding: 60px 40px;
-            backdrop-filter: blur(30px);
-            display: flex;
-            flex-direction: column;
+            padding: 60px 40px; backdrop-filter: blur(35px);
         }
 
-        /* GOLD & ORANGE ANIMATED LOGO */
         .logo-text { 
-            font-size: 24px; 
-            font-weight: 900; 
+            font-size: 24px; font-weight: 900; 
             background: linear-gradient(-45deg, #fbbf24, #f59e0b, #fbbf24);
-            background-size: 200%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            background-size: 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             animation: shimmer 4s infinite linear;
-            text-decoration: none;
         }
         @keyframes shimmer { to { background-position: 200% 50%; } }
 
-        nav { margin-top: 60px; }
-        nav a {
-            color: var(--text-dim);
-            text-decoration: none;
-            display: block;
-            padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 8px;
-            transition: 0.3s;
-            font-size: 15px;
-        }
-        nav a:hover, nav a.active {
-            background: rgba(255, 255, 255, 0.05);
-            color: #fff;
-        }
-
-        main { 
-            flex-grow: 1; 
-            padding: 80px; 
-            overflow-y: auto; 
-            backdrop-filter: blur(4px);
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-            gap: 40px;
-            margin-top: 60px;
-        }
+        main { flex-grow: 1; padding: 80px; overflow-y: auto; backdrop-filter: blur(5px); }
 
         .card {
-            background: var(--card-bg);
-            border: var(--gui-border);
-            border-radius: 24px;
-            padding: 40px;
-            display: flex;
-            align-items: center;
-            gap: 30px;
-            text-decoration: none;
-            color: inherit;
-            transition: 0.4s var(--cubic-out);
-            backdrop-filter: blur(10px);
+            background: var(--card-bg); border: var(--gui-border);
+            border-radius: 20px; padding: 40px; display: flex; align-items: center; gap: 30px;
+            transition: 0.3s; backdrop-filter: blur(10px); margin-top: 40px;
         }
-        .card:hover {
-            border-color: var(--accent-gold);
-            background: rgba(255, 255, 255, 0.07);
-            transform: translateY(-8px);
-        }
+        .card:hover { border-color: var(--accent-gold); transform: translateY(-5px); }
 
-        .icon-box { width: 70px; height: 70px; border-radius: 18px; flex-shrink: 0; }
-
-        /* --- LOADING SCREEN --- */
-        #loader {
-            position: fixed; inset: 0; background: #000; z-index: 5000;
-            display: flex; justify-content: center; align-items: center;
-            transition: 0.6s ease;
-        }
-        .spinner {
-            width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.1);
-            border-top-color: var(--accent-gold); border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
+        /* --- LOADER --- */
+        #loader { position: fixed; inset: 0; background: #000; z-index: 5000; display: flex; justify-content: center; align-items: center; transition: 0.5s; }
+        .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1); border-top-color: var(--accent-gold); border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
-
     </style>
 </head>
 <body>
 
-    <div id="loader">
-        <div class="spinner"></div>
-    </div>
+    <div id="loader"><div class="spinner"></div></div>
 
-    <div class="panorama-viewport">
-        <div class="panorama-cube">
-            <div class="face f-back"></div>
-            <div class="face f-bottom"></div>
-            <div class="face f-front"></div>
-            <div class="face f-left"></div>
-            <div class="face f-right"></div>
-            <div class="face f-top"></div>
+    <div class="viewport">
+        <div class="cube">
+            <div class="face f-px"></div><div class="face f-nx"></div>
+            <div class="face f-py"></div><div class="face f-ny"></div>
+            <div class="face f-pz"></div><div class="face f-nz"></div>
         </div>
     </div>
-    <div class="panorama-overlay"></div>
+    <div class="vignette"></div>
 
     <div id="splash">
         <h1 class="title-main">EaglerCraft Suite</h1>
-        <p id="random-tip" style="color: #eee; margin-bottom: 40px; font-size: 18px;"></p>
+        <p id="tip" style="margin-bottom: 40px; font-size: 18px;"></p>
         <button class="enter-btn" onclick="openGUI()">Enter Suite</button>
     </div>
 
     <div id="main-wrapper">
         <aside>
-            <a href="#" class="logo-text">EAGLERSUITE</a>
-            <nav>
-                <a href="#" class="active">Dashboard</a>
-                <a href="#">Game Clients</a>
-                <a href="#">Binary Tools</a>
-                <a href="#">NBT Editors</a>
+            <div class="logo-text">EAGLERSUITE</div>
+            <nav style="margin-top: 50px;">
+                <div style="padding:15px; background:rgba(255,255,255,0.06); border-radius:12px; border: var(--gui-border);">Dashboard</div>
             </nav>
         </aside>
-
         <main>
             <h1 style="font-size: 55px; font-weight: 900;">Resources</h1>
-            <p style="color: var(--text-dim); font-size: 18px; margin-top: 10px;">The official toolkit for EaglerCraft users.</p>
-
-            <div class="grid">
-                <a href="#" class="card">
-                    <div class="icon-box" style="border: 3px solid var(--accent-orange);"></div>
-                    <div>
-                        <h3>MCA Selector</h3>
-                        <p>Powerful world and chunk editor.</p>
-                    </div>
-                </a>
-                <a href="#" class="card">
-                    <div class="icon-box" style="border: 3px solid #10b981;"></div>
-                    <div>
-                        <h3>Web NBT Editor</h3>
-                        <p>Modify player data and level files.</p>
-                    </div>
-                </a>
+            <div class="card">
+                <div style="width:60px; height:60px; border:2px solid orange; border-radius:12px;"></div>
+                <div><h3>Example Tool</h3><p>Grey border + Transparent glass.</p></div>
             </div>
         </main>
     </div>
 
     <script>
-        // Handle Loader
         window.addEventListener('load', () => {
-            const loader = document.getElementById('loader');
-            loader.style.opacity = '0';
-            setTimeout(() => loader.style.display = 'none', 600);
+            setTimeout(() => { document.getElementById('loader').style.opacity = '0'; }, 400);
+            setTimeout(() => { document.getElementById('loader').style.display = 'none'; }, 900);
         });
 
-        // Tip Generator
-        const tips = [
-            "Tip: Skeletons can't see you through vines!",
-            "Tip: Use a wet sponge in the Nether to dry it instantly.",
-            "Tip: Beds explode in the Nether. Be careful!",
-            "Tip: Gold pickaxes are the fastest tools in the game."
-        ];
-        document.getElementById('random-tip').innerText = tips[Math.floor(Math.random() * tips.length)];
+        document.getElementById('tip').innerText = "Tip: Skeletons can't see through vines!";
 
-        // GUI Reveal Logic
         function openGUI() {
-            const splash = document.getElementById('splash');
-            const wrapper = document.getElementById('main-wrapper');
-
-            splash.style.opacity = '0';
+            document.getElementById('splash').style.opacity = '0';
             setTimeout(() => {
-                splash.style.visibility = 'hidden';
+                document.getElementById('splash').style.display = 'none';
+                const wrapper = document.getElementById('main-wrapper');
                 wrapper.style.display = 'flex';
-                // Trigger fade in
                 setTimeout(() => wrapper.style.opacity = '1', 50);
             }, 800);
         }
