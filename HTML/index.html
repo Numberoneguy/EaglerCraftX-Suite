@@ -11,123 +11,142 @@
     
     <style>
         :root {
-            --bg-dark: #070707;
-            --sidebar-bg: rgba(15, 15, 15, 0.9);
-            --card-bg: rgba(20, 20, 20, 0.7);
+            /* Panorama Assets */
+            --pano-0: url('https://raw.githubusercontent.com/Numberoneguy/EaglerCraftX-Suite/main/Assets/Start-Screen/panorama_0.png');
+            --pano-1: url('https://raw.githubusercontent.com/Numberoneguy/EaglerCraftX-Suite/main/Assets/Start-Screen/panorama_1.png');
+            --pano-2: url('https://raw.githubusercontent.com/Numberoneguy/EaglerCraftX-Suite/main/Assets/Start-Screen/panorama_2.png');
+            --pano-3: url('https://raw.githubusercontent.com/Numberoneguy/EaglerCraftX-Suite/main/Assets/Start-Screen/panorama_3.png');
+            --pano-4: url('https://raw.githubusercontent.com/Numberoneguy/EaglerCraftX-Suite/main/Assets/Start-Screen/panorama_4.png');
+            --pano-5: url('https://raw.githubusercontent.com/Numberoneguy/EaglerCraftX-Suite/main/Assets/Start-Screen/panorama_5.png');
+            --overlay: url('https://raw.githubusercontent.com/Numberoneguy/EaglerCraftX-Suite/main/Assets/Start-Screen/panorama_overlay.png');
+            
+            /* Theme Colors */
+            --sidebar-bg: rgba(15, 15, 15, 0.4);
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --gui-border: 1px solid rgba(255, 255, 255, 0.15);
             --accent-gold: #fbbf24;
             --accent-orange: #f59e0b;
-            --accent-blue: #3b82f6;
             --text-main: #ffffff;
             --text-dim: #a0a0a0;
             --cubic-out: cubic-bezier(0.22, 1, 0.36, 1);
-            --panorama-img: url('https://raw.githubusercontent.com/Numberoneguy/EaglerCraftX-Suite/main/Assets/HomeScreen.jpg');
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body { 
-            background-color: var(--bg-dark); 
+            background-color: #000; 
             color: var(--text-main); 
             font-family: 'Inter', sans-serif;
-            display: flex;
             height: 100vh;
             width: 100vw;
             overflow: hidden;
-        }
-
-        /* --- 1. LOADING SCREEN --- */
-        #loading-overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: #000;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 4000;
-            transition: opacity 0.8s ease;
         }
 
-        .loader {
-            width: 48px;
-            height: 48px;
-            border: 5px solid rgba(255,255,255,0.1);
-            border-bottom-color: var(--accent-gold);
-            border-radius: 50%;
-            animation: rotation 1s linear infinite;
-        }
-
-        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* --- 2. THE MINECRAFT PANORAMA (3D SKYBOX) --- */
+        /* --- 1. MINECRAFT 3D PANORAMA --- */
         .panorama-viewport {
             position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            perspective: 800px; /* How "deep" the 3D looks */
+            inset: 0;
+            perspective: 1000px;
             overflow: hidden;
-            z-index: -1;
-            background: #000;
+            z-index: -2;
         }
 
         .panorama-cube {
             position: absolute;
             width: 100%; height: 100%;
             transform-style: preserve-3d;
-            /* Speed of the Minecraft menu rotation */
-            animation: panoramaRotate 80s infinite linear;
+            animation: panoRotate 120s infinite linear;
         }
 
-        /* The sides of the cube */
-        .cube-face {
+        .face {
             position: absolute;
-            width: 200vw; /* Oversized to ensure no gaps */
-            height: 200vh;
-            top: -50vh; left: -50vw;
-            background-image: var(--panorama-img);
+            width: 101vw; height: 101vh; /* Slight overlap to hide seams */
+            top: -0.5vh; left: -0.5vw;
             background-size: cover;
             background-position: center;
-            filter: blur(10px); /* 35% Blur */
-            opacity: 0.5;
+            filter: blur(4px); /* Minecraft Menu Blur */
+            opacity: 0.7;
         }
 
-        /* Position faces to form a room around the user */
-        .face-front  { transform: translateZ(-100vw); }
-        .face-back   { transform: rotateY(180deg) translateZ(-100vw); }
-        .face-right  { transform: rotateY(90deg) translateZ(-100vw); }
-        .face-left   { transform: rotateY(-90deg) translateZ(-100vw); }
-        .face-top    { transform: rotateX(90deg) translateZ(-100vw); }
-        .face-bottom { transform: rotateX(-90deg) translateZ(-100vw); }
+        /* Cube Face Mapping */
+        .f-back   { background-image: var(--pano-0); transform: rotateY(0deg) translateZ(-50vw); }
+        .f-bottom { background-image: var(--pano-1); transform: rotateX(-90deg) translateZ(-50vw); }
+        .f-front  { background-image: var(--pano-2); transform: rotateY(180deg) translateZ(-50vw); }
+        .f-left   { background-image: var(--pano-3); transform: rotateY(90deg) translateZ(-50vw); }
+        .f-right  { background-image: var(--pano-4); transform: rotateY(-90deg) translateZ(-50vw); }
+        .f-top    { background-image: var(--pano-5); transform: rotateX(90deg) translateZ(-50vw); }
 
-        @keyframes panoramaRotate {
+        @keyframes panoRotate {
             0% { transform: rotateY(0deg) rotateX(-5deg); }
             100% { transform: rotateY(360deg) rotateX(-5deg); }
         }
 
-        /* --- SPLASH SCREEN --- */
-        #splash-screen {
+        /* Panorama Overlay (Vignette) */
+        .panorama-overlay {
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.4);
-            display: none;
+            inset: 0;
+            background-image: var(--overlay);
+            background-size: cover;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* --- 2. START SCREEN (SPLASH) --- */
+        #splash {
+            position: fixed;
+            inset: 0;
+            display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 2000;
-            transition: opacity 0.8s ease;
+            background: rgba(0,0,0,0.2);
+            transition: opacity 0.8s var(--cubic-out), visibility 0.8s;
         }
 
-        /* --- SIDEBAR & CONTENT --- */
+        .title-main {
+            font-size: clamp(40px, 8vw, 90px);
+            font-weight: 900;
+            letter-spacing: -4px;
+            margin-bottom: 20px;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .enter-btn {
+            padding: 20px 65px;
+            background: #fff;
+            color: #000;
+            border: none;
+            border-radius: 50px;
+            font-weight: 900;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .enter-btn:hover { transform: scale(1.1); background: var(--accent-gold); }
+
+        /* --- 3. TRANSPARENT DASHBOARD GUI --- */
+        #main-wrapper {
+            display: none; /* Hidden until Enter is clicked */
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1.2s ease;
+        }
+
         aside {
-            width: 300px;
+            width: 320px;
             background: var(--sidebar-bg);
-            border-right: 1px solid rgba(255,255,255,0.05);
-            padding: 60px 35px;
-            backdrop-filter: blur(20px);
-            z-index: 100;
+            border-right: var(--gui-border);
+            padding: 60px 40px;
+            backdrop-filter: blur(30px);
+            display: flex;
+            flex-direction: column;
         }
 
+        /* GOLD & ORANGE ANIMATED LOGO */
         .logo-text { 
             font-size: 24px; 
             font-weight: 900; 
@@ -135,110 +154,164 @@
             background-size: 200%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: shimmer 3s infinite linear;
-            margin-bottom: 50px;
-            display: inline-block;
+            animation: shimmer 4s infinite linear;
+            text-decoration: none;
         }
+        @keyframes shimmer { to { background-position: 200% 50%; } }
 
-        @keyframes shimmer { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+        nav { margin-top: 60px; }
+        nav a {
+            color: var(--text-dim);
+            text-decoration: none;
+            display: block;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            transition: 0.3s;
+            font-size: 15px;
+        }
+        nav a:hover, nav a.active {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+        }
 
         main { 
-            flex-grow: 1; padding: 80px; overflow-y: auto; 
-            background: rgba(0,0,0,0.1); backdrop-filter: blur(2px);
-            z-index: 50;
+            flex-grow: 1; 
+            padding: 80px; 
+            overflow-y: auto; 
+            backdrop-filter: blur(4px);
         }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 40px; }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
 
         .card {
-            background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 24px; padding: 40px; display: flex; align-items: center; gap: 30px;
-            text-decoration: none; color: inherit; transition: 0.4s var(--cubic-out);
+            background: var(--card-bg);
+            border: var(--gui-border);
+            border-radius: 24px;
+            padding: 40px;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            text-decoration: none;
+            color: inherit;
+            transition: 0.4s var(--cubic-out);
+            backdrop-filter: blur(10px);
         }
-        .card:hover { border-color: var(--accent-gold); transform: translateY(-10px); background: rgba(30,30,30,0.9); }
-
-        .enter-btn {
-            padding: 18px 55px; border: none; background: white; border-radius: 15px; 
-            font-weight: 900; cursor: pointer; transition: 0.3s;
+        .card:hover {
+            border-color: var(--accent-gold);
+            background: rgba(255, 255, 255, 0.07);
+            transform: translateY(-8px);
         }
 
-        .fade-only { opacity: 0; animation: fadeIn 0.8s forwards; }
-        .slide-up-static { opacity: 0; transform: translateY(30px); animation: slideUp 1s var(--cubic-out) forwards; }
-        @keyframes fadeIn { to { opacity: 1; } }
-        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
+        .icon-box { width: 70px; height: 70px; border-radius: 18px; flex-shrink: 0; }
+
+        /* --- LOADING SCREEN --- */
+        #loader {
+            position: fixed; inset: 0; background: #000; z-index: 5000;
+            display: flex; justify-content: center; align-items: center;
+            transition: 0.6s ease;
+        }
+        .spinner {
+            width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.1);
+            border-top-color: var(--accent-gold); border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
     </style>
 </head>
 <body>
 
-    <div id="loading-overlay">
-        <div class="loader"></div>
+    <div id="loader">
+        <div class="spinner"></div>
     </div>
 
     <div class="panorama-viewport">
         <div class="panorama-cube">
-            <div class="cube-face face-front"></div>
-            <div class="cube-face face-back"></div>
-            <div class="cube-face face-right"></div>
-            <div class="cube-face face-left"></div>
-            <div class="cube-face face-top"></div>
-            <div class="cube-face face-bottom"></div>
+            <div class="face f-back"></div>
+            <div class="face f-bottom"></div>
+            <div class="face f-front"></div>
+            <div class="face f-left"></div>
+            <div class="face f-right"></div>
+            <div class="face f-top"></div>
         </div>
     </div>
+    <div class="panorama-overlay"></div>
 
-    <div id="splash-screen">
-        <h1 style="font-size: 75px; font-weight: 900; color: white; margin-bottom: 20px;">EaglerCraft Suite</h1>
-        <p id="random-tip" style="color: white; margin-bottom: 40px; text-shadow: 0 0 15px rgba(0,0,0,1); font-size: 18px;"></p>
-        <button class="enter-btn" onclick="closeSplash()">ENTER SUITE</button>
+    <div id="splash">
+        <h1 class="title-main">EaglerCraft Suite</h1>
+        <p id="random-tip" style="color: #eee; margin-bottom: 40px; font-size: 18px;"></p>
+        <button class="enter-btn" onclick="openGUI()">Enter Suite</button>
     </div>
 
-    <aside>
-        <div class="fade-only">
-            <div class="logo-text">EAGLERSUITE</div>
-        </div>
-        <nav class="fade-only" style="animation-delay: 0.2s;">
-            <a href="#" style="color:white; text-decoration:none; display:block; padding:15px; background:rgba(255,255,255,0.05); border-radius:12px; margin-bottom:10px;">Dashboard</a>
-            <a href="#" style="color:var(--text-dim); text-decoration:none; display:block; padding:15px; margin-bottom:10px;">Game Clients</a>
-            <a href="#" style="color:var(--text-dim); text-decoration:none; display:block; padding:15px;">Binary Tools</a>
-        </nav>
-    </aside>
+    <div id="main-wrapper">
+        <aside>
+            <a href="#" class="logo-text">EAGLERSUITE</a>
+            <nav>
+                <a href="#" class="active">Dashboard</a>
+                <a href="#">Game Clients</a>
+                <a href="#">Binary Tools</a>
+                <a href="#">NBT Editors</a>
+            </nav>
+        </aside>
 
-    <main>
-        <header class="fade-only">
-            <h1 style="font-size: 55px; font-weight: 900; margin-bottom: 10px;">Resources</h1>
-            <p style="color: var(--text-dim); margin-bottom: 60px;">Official toolkit for EaglerCraft Suite users.</p>
-        </header>
+        <main>
+            <h1 style="font-size: 55px; font-weight: 900;">Resources</h1>
+            <p style="color: var(--text-dim); font-size: 18px; margin-top: 10px;">The official toolkit for EaglerCraft users.</p>
 
-        <section class="grid">
-            <a href="#" class="card slide-up-static" style="animation-delay: 0.3s;">
-                <div style="width: 70px; height: 70px; border: 3px solid var(--accent-orange); border-radius: 18px;"></div>
-                <div><h3>MCA Selector</h3><p>Advanced World Editing</p></div>
-            </a>
-            <a href="#" class="card slide-up-static" style="animation-delay: 0.4s;">
-                <div style="width: 70px; height: 70px; border: 3px solid #10b981; border-radius: 18px;"></div>
-                <div><h3>Web NBT Editor</h3><p>Direct world data modification</p></div>
-            </a>
-        </section>
-    </main>
+            <div class="grid">
+                <a href="#" class="card">
+                    <div class="icon-box" style="border: 3px solid var(--accent-orange);"></div>
+                    <div>
+                        <h3>MCA Selector</h3>
+                        <p>Powerful world and chunk editor.</p>
+                    </div>
+                </a>
+                <a href="#" class="card">
+                    <div class="icon-box" style="border: 3px solid #10b981;"></div>
+                    <div>
+                        <h3>Web NBT Editor</h3>
+                        <p>Modify player data and level files.</p>
+                    </div>
+                </a>
+            </div>
+        </main>
+    </div>
 
     <script>
+        // Handle Loader
         window.addEventListener('load', () => {
-            const loader = document.getElementById('loading-overlay');
-            const splash = document.getElementById('splash-screen');
+            const loader = document.getElementById('loader');
             loader.style.opacity = '0';
-            setTimeout(() => {
-                loader.style.display = 'none';
-                splash.style.display = 'flex';
-                splash.style.opacity = '1';
-            }, 800);
+            setTimeout(() => loader.style.display = 'none', 600);
         });
 
-        const tips = ["Tip: Skeletons can't see you through vines!", "Tip: Use a wet sponge in the Nether!", "Tip: Gold picks are the fastest!"];
+        // Tip Generator
+        const tips = [
+            "Tip: Skeletons can't see you through vines!",
+            "Tip: Use a wet sponge in the Nether to dry it instantly.",
+            "Tip: Beds explode in the Nether. Be careful!",
+            "Tip: Gold pickaxes are the fastest tools in the game."
+        ];
         document.getElementById('random-tip').innerText = tips[Math.floor(Math.random() * tips.length)];
 
-        function closeSplash() {
-            const splash = document.getElementById('splash-screen');
+        // GUI Reveal Logic
+        function openGUI() {
+            const splash = document.getElementById('splash');
+            const wrapper = document.getElementById('main-wrapper');
+
             splash.style.opacity = '0';
-            setTimeout(() => { splash.style.display = 'none'; }, 800);
+            setTimeout(() => {
+                splash.style.visibility = 'hidden';
+                wrapper.style.display = 'flex';
+                // Trigger fade in
+                setTimeout(() => wrapper.style.opacity = '1', 50);
+            }, 800);
         }
     </script>
 </body>
