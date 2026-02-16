@@ -49,8 +49,8 @@
 
         .splash-content {
             text-align: center;
-            /* New Slide-up and Fade animation for the whole splash box */
-            animation: slideUpFade 1s var(--cubic-out) forwards;
+            /* STRICTLY SLIDE AND FADE - NO SCALING */
+            animation: slideUpFade 1.2s var(--cubic-out) forwards;
         }
 
         .gradient-title {
@@ -61,8 +61,8 @@
             -webkit-text-fill-color: transparent;
             margin-bottom: 15px;
             letter-spacing: -4px;
-            /* Glow removed so it stays static and clean */
-            filter: drop-shadow(0 0 15px rgba(59, 130, 246, 0.3));
+            /* STATIC GLOW ONLY - NO ANIMATION */
+            filter: drop-shadow(0 0 20px rgba(139, 92, 246, 0.4));
         }
 
         #random-tip {
@@ -85,40 +85,39 @@
         }
         .enter-btn:hover { border-color: var(--accent-blue); background: white; color: black; }
 
-        /* --- ANIMATION ENGINE --- */
+        /* --- ANIMATION ENGINE (SLIDE & FADE ONLY) --- */
         
-        /* Sidebars/Text: Pure Fade */
-        .fade-only {
-            opacity: 0;
-            animation: fadeIn 0.8s var(--cubic-out) forwards;
+        @keyframes slideUpFade {
+            0% { opacity: 0; transform: translateY(50px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
 
-        /* Main GUI: Slide up and Fade (No Scaling) */
+        @keyframes fadeInOnly {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        /* Sidebars: Pure Fade */
+        .fade-only {
+            opacity: 0;
+            animation: fadeInOnly 0.8s var(--cubic-out) forwards;
+        }
+
+        /* Main Elements: Slide and Fade */
         .slide-up-static {
             opacity: 0;
             transform: translateY(40px);
-            animation: slideUpFade 0.9s var(--cubic-out) forwards;
+            animation: slideUpFade 1s var(--cubic-out) forwards;
         }
 
-        @keyframes fadeIn {
-            to { opacity: 1; }
-        }
-
-        @keyframes slideUpFade {
-            to { 
-                opacity: 1; 
-                transform: translateY(0); 
-            }
-        }
-
-        /* Staggered Timing Delays */
+        /* Staggered Delays */
         .d1 { animation-delay: 0.1s; }
         .d2 { animation-delay: 0.2s; }
         .d3 { animation-delay: 0.3s; }
         .d4 { animation-delay: 0.4s; }
         .d5 { animation-delay: 0.5s; }
 
-        /* --- GUI LAYOUT --- */
+        /* --- DASHBOARD LAYOUT --- */
         aside {
             width: 260px;
             background: var(--sidebar-bg);
@@ -148,7 +147,6 @@
             background: #111; border: 1px solid #222;
             padding: 18px; border-radius: 12px; color: white; margin-bottom: 60px; outline: none;
         }
-        .search-bar:focus { border-color: var(--accent-blue); }
 
         .category-title { color: var(--accent-blue); font-size: 12px; letter-spacing: 2px; margin-bottom: 25px; font-weight: 800; text-transform: uppercase; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
@@ -159,7 +157,6 @@
             text-decoration: none; color: inherit; transition: 0.3s ease;
         }
         .card:hover { border-color: var(--accent-blue); transform: translateY(-4px); background: #1a1a1a; }
-        
         .icon-box { width: 52px; height: 52px; border-radius: 12px; background: #222; flex-shrink: 0; }
     </style>
 </head>
@@ -213,7 +210,6 @@
     </main>
 
     <script>
-        // 1. Random Tips
         const tips = [
             "Tip: Skeletons can't see you through vines!",
             "Tip: Use a wet sponge in the Nether to dry it instantly.",
@@ -226,14 +222,12 @@
             tipElement.innerText = tips[Math.floor(Math.random() * tips.length)];
         };
 
-        // 2. Clear Splash
         function closeSplash() {
             const splash = document.getElementById('splash-screen');
             splash.style.opacity = '0';
             setTimeout(() => { splash.style.visibility = 'hidden'; }, 600);
         }
 
-        // 3. Optimized Search (No HTML Leak)
         const searchInput = document.getElementById('mainSearch');
         const cards = document.querySelectorAll('.card');
 
@@ -242,11 +236,7 @@
             cards.forEach(card => {
                 const title = card.querySelector('h3').innerText.toLowerCase();
                 const tags = card.getAttribute('data-tags').toLowerCase();
-                if (title.includes(query) || tags.includes(query)) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
+                card.style.display = (title.includes(query) || tags.includes(query)) ? 'flex' : 'none';
             });
         });
     </script>
