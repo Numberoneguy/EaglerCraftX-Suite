@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terminal | EaglerCraftX Suite</title>
+    <title>EaglerCraft Suite</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
@@ -40,38 +40,60 @@
             justify-content: center;
             align-items: center;
             z-index: 1000;
-            transition: opacity 0.8s ease, visibility 0.8s;
+            transition: opacity 0.6s ease, visibility 0.6s;
+        }
+
+        .splash-content {
+            text-align: center;
+            animation: pop-up 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes pop-up {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
         }
 
         .gradient-title {
-            font-size: 80px;
+            font-size: 85px;
             font-weight: 900;
-            background: linear-gradient(to right, var(--accent-blue), var(--accent-purple));
+            background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 20px;
-            letter-spacing: -3px;
+            margin-bottom: 15px;
+            letter-spacing: -4px;
+            animation: pulse-glow 3s infinite ease-in-out;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.3)); transform: scale(1); }
+            50% { filter: drop-shadow(0 0 35px rgba(139, 92, 246, 0.6)); transform: scale(1.03); }
         }
 
         #random-tip {
             color: var(--text-dim);
             font-size: 18px;
-            font-style: italic;
             margin-bottom: 40px;
-            height: 24px;
+            font-weight: 400;
         }
 
         .enter-btn {
-            padding: 15px 40px;
-            border: 2px solid #333;
-            background: transparent;
+            padding: 16px 45px;
+            border: 1px solid #333;
+            background: #111;
             color: white;
-            border-radius: 50px;
+            border-radius: 12px;
             cursor: pointer;
             font-weight: 700;
-            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
         }
-        .enter-btn:hover { background: white; color: black; transform: scale(1.05); }
+        .enter-btn:hover { 
+            border-color: var(--accent-blue); 
+            background: white; 
+            color: black;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
 
         /* --- DASHBOARD GUI --- */
         aside {
@@ -82,6 +104,7 @@
             flex-direction: column;
             padding: 40px 24px;
             height: 100vh;
+            flex-shrink: 0;
         }
 
         .logo-text { font-size: 20px; font-weight: 900; color: white; text-decoration: none; margin-bottom: 50px; }
@@ -90,25 +113,29 @@
         nav ul { list-style: none; }
         nav li { margin-bottom: 10px; }
         nav a { text-decoration: none; color: var(--text-dim); font-size: 14px; display: block; padding: 12px; border-radius: 8px; transition: 0.2s; }
-        nav a:hover, nav a.active { background: #1a1a1a; color: white; }
+        nav a:hover, nav a.active { background: #1a1a1a; color: white; border-left: 3px solid var(--accent-blue); }
 
         main { flex-grow: 1; padding: 60px; overflow-y: auto; height: 100vh; }
+        
         .search-bar {
             width: 100%; max-width: 500px;
             background: #111; border: 1px solid #222;
-            padding: 16px; border-radius: 12px; color: white; margin-bottom: 50px; outline: none;
+            padding: 18px; border-radius: 12px; color: white; margin-bottom: 60px; outline: none;
+            font-family: 'Inter', sans-serif;
         }
+        .search-bar:focus { border-color: var(--accent-blue); }
 
         .category-title { color: var(--accent-blue); font-size: 12px; letter-spacing: 2px; margin-bottom: 25px; font-weight: 800; text-transform: uppercase; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
 
         .card {
             background: var(--card-bg); border: 1px solid #1a1a1a;
-            border-radius: 16px; padding: 24px; display: flex; align-items: center; gap: 20px;
-            text-decoration: none; color: inherit; transition: 0.2s;
+            border-radius: 16px; padding: 26px; display: flex; align-items: center; gap: 20px;
+            text-decoration: none; color: inherit; transition: 0.3s;
         }
         .card:hover { border-color: var(--accent-blue); transform: translateY(-5px); background: #1a1a1a; }
-        .icon-box { width: 48px; height: 48px; border-radius: 12px; background: #222; flex-shrink: 0; }
+        
+        .icon-box { width: 52px; height: 52px; border-radius: 12px; background: #222; flex-shrink: 0; }
 
         /* Secret Joke */
         .secret-joke { margin-top: auto; color: var(--sidebar-bg); font-size: 10px; user-select: all; text-align: center; }
@@ -118,13 +145,15 @@
 <body>
 
     <div id="splash-screen">
-        <h1 class="gradient-title">EaglerCraftX Suite</h1>
-        <p id="random-tip">Loading Minecraft Tip...</p>
-        <button class="enter-btn" onclick="closeSplash()">ENTER TERMINAL</button>
+        <div class="splash-content">
+            <h1 class="gradient-title">EaglerCraft Suite</h1>
+            <p id="random-tip">Fetching Minecraft Secrets...</p>
+            <button class="enter-btn" onclick="closeSplash()">Enter Suite</button>
+        </div>
     </div>
 
     <aside>
-        <a href="index.html" class="logo-text">TERMINAL<span>SUITE</span></a>
+        <a href="index.html" class="logo-text">EAGLER<span>SUITE</span></a>
         <nav>
             <ul>
                 <li><a href="#" class="active">Dashboard</a></li>
@@ -133,36 +162,41 @@
                 <li><a href="editor.html">NBT Editors</a></li>
             </ul>
         </nav>
-        <div class="secret-joke">Why don't skeletons fight each other? They don't have the guts.</div>
+        <div class="secret-joke">Why did the enderman cross the road? To teleport to the other side.</div>
     </aside>
 
     <main>
-        <input type="text" id="mainSearch" class="search-bar" placeholder="Search resources...">
+        <header>
+            <h1 style="font-size: 38px; font-weight: 900; margin-bottom: 10px;">Resources</h1>
+            <p style="color: var(--text-dim); margin-bottom: 40px;">Official toolkit for EaglerCraft Suite users.</p>
+        </header>
 
-        <section class="category-section">
+        <input type="text" id="mainSearch" class="search-bar" placeholder="Filter tools or clients...">
+
+        <section class="category-section" id="tools">
             <h2 class="category-title">Core Tools</h2>
             <div class="grid">
                 <a href="Eaglercraft-Binary-Tools.html" class="card" data-tags="binary tools epk">
                     <div class="icon-box" style="border: 2px solid var(--accent-blue);"></div>
-                    <div class="card-info"><h3>Binary Tools</h3><p>Compile/Decompile EPK</p></div>
+                    <div class="card-info"><h3>Binary Tools</h3><p>Compile/Decompile EPK Files</p></div>
                 </a>
                 <a href="editor.html" class="card" data-tags="nbt editor">
                     <div class="icon-box" style="border: 2px solid #10b981;"></div>
-                    <div class="card-info"><h3>Web NBT Editor</h3><p>Modify world data</p></div>
+                    <div class="card-info"><h3>Web NBT Editor</h3><p>Direct world data modification</p></div>
                 </a>
             </div>
         </section>
 
-        <section class="category-section" style="margin-top: 50px;">
-            <h2 class="category-title">Clients</h2>
+        <section class="category-section" id="clients" style="margin-top: 60px;">
+            <h2 class="category-title">Featured Clients</h2>
             <div class="grid">
                 <a href="#" class="card" data-tags="pixel client">
                     <div class="icon-box" style="border: 2px solid #f59e0b;"></div>
-                    <div class="card-info"><h3>Pixel Client</h3><p>1.8.8 Performance</p></div>
+                    <div class="card-info"><h3>Pixel Client</h3><p>High Performance 1.8.8</p></div>
                 </a>
                 <a href="#" class="card" data-tags="wurstx hack">
                     <div class="icon-box" style="border: 2px solid #ef4444;"></div>
-                    <div class="card-info"><h3>WurstX</h3><p>Utility/Cheat Client</p></div>
+                    <div class="card-info"><h3>WurstX</h3><p>Classic Hack/Utility Client</p></div>
                 </a>
             </div>
         </section>
@@ -171,13 +205,13 @@
     <script>
         // 1. Random Minecraft Tips
         const tips = [
-            "Tip: Never dig straight down!",
-            "Tip: Gold picks mine fastest, but break easiest.",
-            "Tip: Use silk touch to get grass blocks.",
-            "Tip: Phantoms appear if you don't sleep for 3 days.",
-            "Tip: Blazes are weak to snowballs.",
-            "Tip: Always carry a water bucket for MLG saves.",
-            "Tip: Punching trees is the first step to glory."
+            "Tip: Skeletons can't see you through vines!",
+            "Tip: Use a wet sponge in the Nether to dry it instantly.",
+            "Tip: Efficiency V on a gold pick is the fastest mining speed.",
+            "Tip: You can use a furnace as a cheap light source.",
+            "Tip: Zombified Piglins won't attack unless you hit them first.",
+            "Tip: Beds explode in the Nether. Be careful!",
+            "Tip: Sweet berry bushes slow down mobs and players."
         ];
 
         window.onload = () => {
@@ -190,7 +224,9 @@
         function closeSplash() {
             const splash = document.getElementById('splash-screen');
             splash.style.opacity = '0';
-            setTimeout(() => { splash.style.visibility = 'hidden'; }, 800);
+            setTimeout(() => { 
+                splash.style.visibility = 'hidden'; 
+            }, 600);
         }
 
         // 3. Search Logic
