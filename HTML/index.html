@@ -12,11 +12,11 @@
     <style>
         :root {
             --bg-dark: #070707;
-            --sidebar-bg: rgba(15, 15, 15, 0.95);
-            --card-bg: rgba(20, 20, 20, 0.8);
-            --accent-blue: #3b82f6;
+            --sidebar-bg: rgba(15, 15, 15, 0.9);
+            --card-bg: rgba(20, 20, 20, 0.7);
             --accent-gold: #fbbf24;
             --accent-orange: #f59e0b;
+            --accent-blue: #3b82f6;
             --text-main: #ffffff;
             --text-dim: #a0a0a0;
             --cubic-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -32,10 +32,51 @@
             height: 100vh;
             width: 100vw;
             overflow: hidden;
-            /* Wallpaper applied to main body background as well */
+            perspective: 1500px; /* Gives depth to the rotating background */
+        }
+
+        /* --- 1. LOADING SCREEN --- */
+        #loading-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            transition: opacity 0.6s ease;
+        }
+
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 5px solid #FFF;
+            border-bottom-color: var(--accent-gold);
+            border-radius: 50%;
+            animation: rotation 1s linear infinite;
+        }
+
+        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* --- 2. 360 ROTATING WALLPAPER LAYER --- */
+        .wallpaper-container {
+            position: fixed;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%; /* Extra size to prevent edges showing during spin */
             background-image: url('https://raw.githubusercontent.com/Numberoneguy/EaglerCraftX-Suite/main/Assets/HomeScreen.jpg');
             background-size: cover;
             background-position: center;
+            filter: blur(10px); /* 35% Blur */
+            opacity: 0.4;
+            z-index: -1;
+            animation: rotateBG 20s infinite linear;
+            transform-style: preserve-3d;
+        }
+
+        @keyframes rotateBG {
+            from { transform: rotateZ(0deg); }
+            to { transform: rotateZ(360deg); }
         }
 
         /* --- SPLASH SCREEN --- */
@@ -43,31 +84,13 @@
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: var(--bg-dark);
-            display: flex;
+            background: rgba(0,0,0,0.8);
+            display: none; /* Controlled by JS */
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
-            transition: opacity 0.8s ease, visibility 0.8s;
-        }
-
-        #splash-screen::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background-image: url('https://raw.githubusercontent.com/Numberoneguy/EaglerCraftX-Suite/main/Assets/HomeScreen.jpg');
-            background-size: cover;
-            background-position: center;
-            filter: blur(12px); /* 35% Blur Intensity */
-            opacity: 0.5;
-            z-index: -1;
-        }
-
-        .splash-content {
-            text-align: center;
-            animation: slideUpFade 1.2s var(--cubic-out) forwards;
+            z-index: 2000;
+            transition: opacity 0.8s ease;
         }
 
         .gradient-title {
@@ -77,184 +100,134 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 20px;
-            letter-spacing: -4px;
-            filter: drop-shadow(0 0 30px rgba(0, 0, 0, 0.5));
+            animation: slideUpFade 1.2s var(--cubic-out) forwards;
         }
 
-        /* --- ANIMATIONS --- */
-        @keyframes slideUpFade {
-            0% { opacity: 0; transform: translateY(50px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes goldShimmer {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .fade-only { opacity: 0; animation: fadeIn 0.8s var(--cubic-out) forwards; }
-        .slide-up-static { opacity: 0; transform: translateY(30px); animation: slideUpFade 1s var(--cubic-out) forwards; }
-        @keyframes fadeIn { to { opacity: 1; } }
-
-        .d1 { animation-delay: 0.1s; }
-        .d2 { animation-delay: 0.2s; }
-        .d3 { animation-delay: 0.3s; }
-        .d4 { animation-delay: 0.4s; }
-        .d5 { animation-delay: 0.5s; }
-
-        /* --- SIDEBAR --- */
+        /* --- SIDEBAR & LOGO --- */
         aside {
-            width: 280px; /* Wider for more space */
+            width: 300px;
             background: var(--sidebar-bg);
             border-right: 1px solid rgba(255,255,255,0.05);
             display: flex;
             flex-direction: column;
-            padding: 50px 30px;
-            height: 100vh;
-            flex-shrink: 0;
-            backdrop-filter: blur(20px);
+            padding: 60px 35px;
+            backdrop-filter: blur(15px);
+            z-index: 100;
         }
 
-        /* NEW: Gold & Orange Animated Title */
         .logo-text { 
-            font-size: 22px; 
+            font-size: 24px; 
             font-weight: 900; 
-            text-decoration: none; 
-            margin-bottom: 60px; 
-            background: linear-gradient(-45deg, #fbbf24, #f59e0b, #d97706, #fbbf24);
-            background-size: 300%;
+            background: linear-gradient(-45deg, #fbbf24, #f59e0b, #fbbf24);
+            background-size: 200%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: goldShimmer 4s infinite linear;
-            letter-spacing: -0.5px;
+            animation: shimmer 3s infinite linear;
+            margin-bottom: 50px;
         }
 
-        nav li { margin-bottom: 15px; list-style: none; }
+        @keyframes shimmer { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+
         nav a { 
-            text-decoration: none; color: var(--text-dim); font-size: 15px; 
-            display: block; padding: 14px 18px; border-radius: 12px; transition: 0.3s; 
+            color: var(--text-dim); text-decoration: none; padding: 15px; 
+            display: block; border-radius: 12px; transition: 0.3s; margin-bottom: 10px;
         }
-        nav a:hover, nav a.active { background: rgba(255,255,255,0.05); color: white; transform: translateX(5px); }
+        nav a:hover, nav a.active { background: rgba(255,255,255,0.05); color: white; }
 
-        /* --- MAIN --- */
+        /* --- MAIN GUI --- */
         main { 
-            flex-grow: 1; 
-            padding: 80px; 
-            overflow-y: auto; 
-            height: 100vh; 
-            background: rgba(0, 0, 0, 0.4); /* Dark overlay to see tools clearly */
-            backdrop-filter: blur(10px); /* Secondary blur for content area */
-        }
-        
-        .search-bar {
-            width: 100%; max-width: 600px;
-            background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1);
-            padding: 20px 24px; border-radius: 16px; color: white; margin-bottom: 80px; outline: none;
-            font-size: 16px;
+            flex-grow: 1; padding: 80px; overflow-y: auto; 
+            background: rgba(0,0,0,0.2); backdrop-filter: blur(5px);
+            z-index: 50;
         }
 
-        .category-title { color: var(--accent-blue); font-size: 13px; letter-spacing: 2px; margin-bottom: 35px; font-weight: 800; text-transform: uppercase; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 30px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 40px; }
 
         .card {
-            background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 20px; padding: 35px; display: flex; align-items: center; gap: 25px;
+            background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 24px; padding: 40px; display: flex; align-items: center; gap: 30px;
             text-decoration: none; color: inherit; transition: 0.4s var(--cubic-out);
-            backdrop-filter: blur(5px);
         }
-        .card:hover { border-color: var(--accent-blue); transform: translateY(-8px); background: rgba(30, 30, 30, 0.9); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
-        
-        .icon-box { width: 60px; height: 60px; border-radius: 15px; background: #222; flex-shrink: 0; }
-        
-        .card h3 { font-size: 20px; margin-bottom: 6px; }
-        .card p { color: var(--text-dim); font-size: 14px; }
+        .card:hover { border-color: var(--accent-gold); transform: translateY(-10px); background: rgba(30,30,30,0.9); }
+
+        /* Animations */
+        .fade-only { opacity: 0; animation: fadeIn 0.8s forwards; }
+        .slide-up-static { opacity: 0; transform: translateY(30px); animation: slideUp 1s var(--cubic-out) forwards; }
+        @keyframes fadeIn { to { opacity: 1; } }
+        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
 
         .enter-btn {
-            padding: 18px 50px; border: none; background: white; color: black;
-            border-radius: 14px; cursor: pointer; font-weight: 800; text-transform: uppercase;
-            transition: 0.3s;
+            padding: 18px 55px; border: none; background: white; border-radius: 15px; 
+            font-weight: 900; cursor: pointer; transition: 0.3s;
         }
-        .enter-btn:hover { background: var(--accent-blue); color: white; transform: translateY(-3px); }
+        .enter-btn:hover { background: var(--accent-gold); transform: scale(1.05); }
     </style>
 </head>
 <body>
 
+    <div id="loading-overlay">
+        <div class="loader"></div>
+    </div>
+
+    <div class="wallpaper-container"></div>
+
     <div id="splash-screen">
-        <div class="splash-content">
-            <h1 class="gradient-title">EaglerCraft Suite</h1>
-            <p id="random-tip" style="color: white; margin-bottom: 40px; text-shadow: 0 2px 10px rgba(0,0,0,0.5);"></p>
-            <button class="enter-btn" onclick="closeSplash()">Enter Suite</button>
-        </div>
+        <h1 class="gradient-title">EaglerCraft Suite</h1>
+        <p id="random-tip" style="color: white; margin-bottom: 40px; text-shadow: 0 0 10px rgba(0,0,0,1);"></p>
+        <button class="enter-btn" onclick="closeSplash()">ENTER SUITE</button>
     </div>
 
     <aside>
-        <div class="fade-only d1">
-            <a href="index.html" class="logo-text">EAGLERSUITE</a>
+        <div class="fade-only">
+            <div class="logo-text">EAGLERSUITE</div>
         </div>
-        <nav>
-            <ul>
-                <li class="fade-only d2"><a href="#" class="active">Dashboard</a></li>
-                <li class="fade-only d3"><a href="#clients">Game Clients</a></li>
-                <li class="fade-only d4"><a href="Eaglercraft-Binary-Tools.html">Binary Tools</a></li>
-                <li class="fade-only d5"><a href="editor.html">NBT Editors</a></li>
-            </ul>
+        <nav class="fade-only" style="animation-delay: 0.2s;">
+            <a href="#" class="active">Dashboard</a>
+            <a href="#">Game Clients</a>
+            <a href="#">Binary Tools</a>
+            <a href="#">NBT Editors</a>
         </nav>
     </aside>
 
     <main>
-        <header class="fade-only d1">
-            <h1 style="font-size: 50px; font-weight: 900; margin-bottom: 15px;">Resources</h1>
+        <header class="fade-only">
+            <h1 style="font-size: 55px; font-weight: 900; margin-bottom: 20px;">Resources</h1>
             <p style="color: var(--text-dim); margin-bottom: 60px; font-size: 18px;">Official toolkit for EaglerCraft Suite users.</p>
         </header>
 
-        <div class="slide-up-static d2">
-            <input type="text" id="mainSearch" class="search-bar" placeholder="Search for tools, clients, or editors...">
-        </div>
-
-        <section class="category-section">
-            <h2 class="category-title fade-only d3">Core Tools</h2>
-            <div class="grid">
-                <a href="https://github.com/Querz/mcaselector/releases/download/2.6.1/MCA_Selector_Setup.exe" class="card slide-up-static d4" data-tags="mca selector world editor chunks">
-                    <div class="icon-box" style="border: 2px solid var(--accent-orange);"></div>
-                    <div class="card-info"><h3>MCA Selector</h3><p>Advanced World & Chunk Editing</p></div>
-                </a>
-                <a href="editor.html" class="card slide-up-static d5" data-tags="nbt editor">
-                    <div class="icon-box" style="border: 2px solid #10b981;"></div>
-                    <div class="card-info"><h3>Web NBT Editor</h3><p>Direct world data modification</p></div>
-                </a>
-            </div>
+        <section class="grid">
+            <a href="#" class="card slide-up-static" style="animation-delay: 0.4s;">
+                <div style="width: 70px; height: 70px; border: 3px solid var(--accent-orange); border-radius: 18px;"></div>
+                <div><h3>MCA Selector</h3><p>Advanced World Editing</p></div>
+            </a>
+            <a href="#" class="card slide-up-static" style="animation-delay: 0.5s;">
+                <div style="width: 70px; height: 70px; border: 3px solid #10b981; border-radius: 18px;"></div>
+                <div><h3>Web NBT Editor</h3><p>Direct world data modification</p></div>
+            </a>
         </section>
     </main>
 
     <script>
-        const tips = [
-            "Tip: Skeletons can't see you through vines!",
-            "Tip: Use a wet sponge in the Nether to dry it instantly.",
-            "Tip: Efficiency V gold picks are the fastest tools.",
-            "Tip: Beds explode in the Nether. Be careful!"
-        ];
+        // Pre-loader Logic
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loading-overlay');
+            const splash = document.getElementById('splash-screen');
+            loader.style.opacity = '0';
+            setTimeout(() => {
+                loader.style.display = 'none';
+                splash.style.display = 'flex';
+                splash.style.opacity = '1';
+            }, 600);
+        });
 
-        window.onload = () => {
-            document.getElementById('random-tip').innerText = tips[Math.floor(Math.random() * tips.length)];
-        };
+        const tips = ["Tip: Skeletons can't see through vines!", "Tip: Beds explode in the Nether!", "Tip: Don't dig straight down!"];
+        document.getElementById('random-tip').innerText = tips[Math.floor(Math.random() * tips.length)];
 
         function closeSplash() {
             const splash = document.getElementById('splash-screen');
             splash.style.opacity = '0';
-            setTimeout(() => { splash.style.visibility = 'hidden'; }, 800);
+            setTimeout(() => { splash.style.display = 'none'; }, 800);
         }
-
-        const searchInput = document.getElementById('mainSearch');
-        const cards = document.querySelectorAll('.card');
-        searchInput.addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase();
-            cards.forEach(card => {
-                const title = card.querySelector('h3').innerText.toLowerCase();
-                const tags = card.getAttribute('data-tags').toLowerCase();
-                card.style.display = (title.includes(query) || tags.includes(query)) ? 'flex' : 'none';
-            });
-        });
     </script>
 </body>
 </html>
