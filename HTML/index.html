@@ -206,32 +206,46 @@
         </section>
     </main>
 
-    <script>
-        const tips = [
-            "Tip: Skeletons can't see you through vines!",
-            "Tip: Use a wet sponge in the Nether to dry it.",
-            "Tip: Beds explode in the Nether!",
-            "Tip: Blazes are weak to snowballs."
-        ];
+<script>
+    // 1. Random Minecraft Tips
+    const tips = [
+        "Tip: Skeletons can't see you through vines!",
+        "Tip: Use a wet sponge in the Nether to dry it.",
+        "Tip: Beds explode in the Nether!",
+        "Tip: Blazes are weak to snowballs."
+    ];
 
-        window.onload = () => {
-            document.getElementById('random-tip').innerText = tips[Math.floor(Math.random() * tips.length)];
-        };
+    window.onload = () => {
+        document.getElementById('random-tip').innerText = tips[Math.floor(Math.random() * tips.length)];
+    };
 
-        function closeSplash() {
-            const splash = document.getElementById('splash-screen');
-            splash.style.opacity = '0';
-            setTimeout(() => { splash.style.visibility = 'hidden'; }, 600);
-        }
+    function closeSplash() {
+        const splash = document.getElementById('splash-screen');
+        splash.style.opacity = '0';
+        setTimeout(() => { splash.style.visibility = 'hidden'; }, 600);
+    }
 
-        const searchInput = document.getElementById('mainSearch');
-        const cards = document.querySelectorAll('.card');
-        searchInput.addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase();
-            cards.forEach(card => {
-                card.style.display = card.innerText.toLowerCase().includes(query) ? 'flex' : 'none';
-            });
+    // 2. FIXED SEARCH LOGIC
+    const searchInput = document.getElementById('mainSearch');
+    const cards = document.querySelectorAll('.card');
+
+    searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase();
+        
+        cards.forEach(card => {
+            // We only look at the H3 title and the data-tags attribute
+            const title = card.querySelector('h3').innerText.toLowerCase();
+            const tags = card.getAttribute('data-tags').toLowerCase();
+            const description = card.querySelector('p').innerText.toLowerCase();
+            
+            // Check if search matches title, description, or tags
+            if (title.includes(query) || tags.includes(query) || description.includes(query)) {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
         });
-    </script>
+    });
+</script>
 </body>
 </html>
