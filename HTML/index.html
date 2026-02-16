@@ -20,6 +20,7 @@
             --text-main: #ffffff;
             --text-dim: #a0a0a0;
             --cubic-out: cubic-bezier(0.22, 1, 0.36, 1);
+            --panorama-img: url('https://raw.githubusercontent.com/Numberoneguy/EaglerCraftX-Suite/main/Assets/HomeScreen.jpg');
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -32,7 +33,6 @@
             height: 100vh;
             width: 100vw;
             overflow: hidden;
-            perspective: 1500px; /* Gives depth to the rotating background */
         }
 
         /* --- 1. LOADING SCREEN --- */
@@ -44,14 +44,14 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 3000;
-            transition: opacity 0.6s ease;
+            z-index: 4000;
+            transition: opacity 0.8s ease;
         }
 
         .loader {
             width: 48px;
             height: 48px;
-            border: 5px solid #FFF;
+            border: 5px solid rgba(255,255,255,0.1);
             border-bottom-color: var(--accent-gold);
             border-radius: 50%;
             animation: rotation 1s linear infinite;
@@ -59,24 +59,49 @@
 
         @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* --- 2. 360 ROTATING WALLPAPER LAYER --- */
-        .wallpaper-container {
+        /* --- 2. THE MINECRAFT PANORAMA (3D SKYBOX) --- */
+        .panorama-viewport {
             position: fixed;
-            top: -50%; left: -50%;
-            width: 200%; height: 200%; /* Extra size to prevent edges showing during spin */
-            background-image: url('https://raw.githubusercontent.com/Numberoneguy/EaglerCraftX-Suite/main/Assets/HomeScreen.jpg');
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            perspective: 800px; /* How "deep" the 3D looks */
+            overflow: hidden;
+            z-index: -1;
+            background: #000;
+        }
+
+        .panorama-cube {
+            position: absolute;
+            width: 100%; height: 100%;
+            transform-style: preserve-3d;
+            /* Speed of the Minecraft menu rotation */
+            animation: panoramaRotate 80s infinite linear;
+        }
+
+        /* The sides of the cube */
+        .cube-face {
+            position: absolute;
+            width: 200vw; /* Oversized to ensure no gaps */
+            height: 200vh;
+            top: -50vh; left: -50vw;
+            background-image: var(--panorama-img);
             background-size: cover;
             background-position: center;
             filter: blur(10px); /* 35% Blur */
-            opacity: 0.4;
-            z-index: -1;
-            animation: rotateBG 20s infinite linear;
-            transform-style: preserve-3d;
+            opacity: 0.5;
         }
 
-        @keyframes rotateBG {
-            from { transform: rotateZ(0deg); }
-            to { transform: rotateZ(360deg); }
+        /* Position faces to form a room around the user */
+        .face-front  { transform: translateZ(-100vw); }
+        .face-back   { transform: rotateY(180deg) translateZ(-100vw); }
+        .face-right  { transform: rotateY(90deg) translateZ(-100vw); }
+        .face-left   { transform: rotateY(-90deg) translateZ(-100vw); }
+        .face-top    { transform: rotateX(90deg) translateZ(-100vw); }
+        .face-bottom { transform: rotateX(-90deg) translateZ(-100vw); }
+
+        @keyframes panoramaRotate {
+            0% { transform: rotateY(0deg) rotateX(-5deg); }
+            100% { transform: rotateY(360deg) rotateX(-5deg); }
         }
 
         /* --- SPLASH SCREEN --- */
@@ -84,8 +109,8 @@
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            display: none; /* Controlled by JS */
+            background: rgba(0,0,0,0.4);
+            display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -93,25 +118,13 @@
             transition: opacity 0.8s ease;
         }
 
-        .gradient-title {
-            font-size: clamp(40px, 8vw, 85px);
-            font-weight: 900;
-            background: linear-gradient(45deg, var(--accent-blue), #8b5cf6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 20px;
-            animation: slideUpFade 1.2s var(--cubic-out) forwards;
-        }
-
-        /* --- SIDEBAR & LOGO --- */
+        /* --- SIDEBAR & CONTENT --- */
         aside {
             width: 300px;
             background: var(--sidebar-bg);
             border-right: 1px solid rgba(255,255,255,0.05);
-            display: flex;
-            flex-direction: column;
             padding: 60px 35px;
-            backdrop-filter: blur(15px);
+            backdrop-filter: blur(20px);
             z-index: 100;
         }
 
@@ -124,20 +137,14 @@
             -webkit-text-fill-color: transparent;
             animation: shimmer 3s infinite linear;
             margin-bottom: 50px;
+            display: inline-block;
         }
 
         @keyframes shimmer { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
 
-        nav a { 
-            color: var(--text-dim); text-decoration: none; padding: 15px; 
-            display: block; border-radius: 12px; transition: 0.3s; margin-bottom: 10px;
-        }
-        nav a:hover, nav a.active { background: rgba(255,255,255,0.05); color: white; }
-
-        /* --- MAIN GUI --- */
         main { 
             flex-grow: 1; padding: 80px; overflow-y: auto; 
-            background: rgba(0,0,0,0.2); backdrop-filter: blur(5px);
+            background: rgba(0,0,0,0.1); backdrop-filter: blur(2px);
             z-index: 50;
         }
 
@@ -150,17 +157,15 @@
         }
         .card:hover { border-color: var(--accent-gold); transform: translateY(-10px); background: rgba(30,30,30,0.9); }
 
-        /* Animations */
-        .fade-only { opacity: 0; animation: fadeIn 0.8s forwards; }
-        .slide-up-static { opacity: 0; transform: translateY(30px); animation: slideUp 1s var(--cubic-out) forwards; }
-        @keyframes fadeIn { to { opacity: 1; } }
-        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
-
         .enter-btn {
             padding: 18px 55px; border: none; background: white; border-radius: 15px; 
             font-weight: 900; cursor: pointer; transition: 0.3s;
         }
-        .enter-btn:hover { background: var(--accent-gold); transform: scale(1.05); }
+
+        .fade-only { opacity: 0; animation: fadeIn 0.8s forwards; }
+        .slide-up-static { opacity: 0; transform: translateY(30px); animation: slideUp 1s var(--cubic-out) forwards; }
+        @keyframes fadeIn { to { opacity: 1; } }
+        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -169,11 +174,20 @@
         <div class="loader"></div>
     </div>
 
-    <div class="wallpaper-container"></div>
+    <div class="panorama-viewport">
+        <div class="panorama-cube">
+            <div class="cube-face face-front"></div>
+            <div class="cube-face face-back"></div>
+            <div class="cube-face face-right"></div>
+            <div class="cube-face face-left"></div>
+            <div class="cube-face face-top"></div>
+            <div class="cube-face face-bottom"></div>
+        </div>
+    </div>
 
     <div id="splash-screen">
-        <h1 class="gradient-title">EaglerCraft Suite</h1>
-        <p id="random-tip" style="color: white; margin-bottom: 40px; text-shadow: 0 0 10px rgba(0,0,0,1);"></p>
+        <h1 style="font-size: 75px; font-weight: 900; color: white; margin-bottom: 20px;">EaglerCraft Suite</h1>
+        <p id="random-tip" style="color: white; margin-bottom: 40px; text-shadow: 0 0 15px rgba(0,0,0,1); font-size: 18px;"></p>
         <button class="enter-btn" onclick="closeSplash()">ENTER SUITE</button>
     </div>
 
@@ -182,25 +196,24 @@
             <div class="logo-text">EAGLERSUITE</div>
         </div>
         <nav class="fade-only" style="animation-delay: 0.2s;">
-            <a href="#" class="active">Dashboard</a>
-            <a href="#">Game Clients</a>
-            <a href="#">Binary Tools</a>
-            <a href="#">NBT Editors</a>
+            <a href="#" style="color:white; text-decoration:none; display:block; padding:15px; background:rgba(255,255,255,0.05); border-radius:12px; margin-bottom:10px;">Dashboard</a>
+            <a href="#" style="color:var(--text-dim); text-decoration:none; display:block; padding:15px; margin-bottom:10px;">Game Clients</a>
+            <a href="#" style="color:var(--text-dim); text-decoration:none; display:block; padding:15px;">Binary Tools</a>
         </nav>
     </aside>
 
     <main>
         <header class="fade-only">
-            <h1 style="font-size: 55px; font-weight: 900; margin-bottom: 20px;">Resources</h1>
-            <p style="color: var(--text-dim); margin-bottom: 60px; font-size: 18px;">Official toolkit for EaglerCraft Suite users.</p>
+            <h1 style="font-size: 55px; font-weight: 900; margin-bottom: 10px;">Resources</h1>
+            <p style="color: var(--text-dim); margin-bottom: 60px;">Official toolkit for EaglerCraft Suite users.</p>
         </header>
 
         <section class="grid">
-            <a href="#" class="card slide-up-static" style="animation-delay: 0.4s;">
+            <a href="#" class="card slide-up-static" style="animation-delay: 0.3s;">
                 <div style="width: 70px; height: 70px; border: 3px solid var(--accent-orange); border-radius: 18px;"></div>
                 <div><h3>MCA Selector</h3><p>Advanced World Editing</p></div>
             </a>
-            <a href="#" class="card slide-up-static" style="animation-delay: 0.5s;">
+            <a href="#" class="card slide-up-static" style="animation-delay: 0.4s;">
                 <div style="width: 70px; height: 70px; border: 3px solid #10b981; border-radius: 18px;"></div>
                 <div><h3>Web NBT Editor</h3><p>Direct world data modification</p></div>
             </a>
@@ -208,7 +221,6 @@
     </main>
 
     <script>
-        // Pre-loader Logic
         window.addEventListener('load', () => {
             const loader = document.getElementById('loading-overlay');
             const splash = document.getElementById('splash-screen');
@@ -217,10 +229,10 @@
                 loader.style.display = 'none';
                 splash.style.display = 'flex';
                 splash.style.opacity = '1';
-            }, 600);
+            }, 800);
         });
 
-        const tips = ["Tip: Skeletons can't see through vines!", "Tip: Beds explode in the Nether!", "Tip: Don't dig straight down!"];
+        const tips = ["Tip: Skeletons can't see you through vines!", "Tip: Use a wet sponge in the Nether!", "Tip: Gold picks are the fastest!"];
         document.getElementById('random-tip').innerText = tips[Math.floor(Math.random() * tips.length)];
 
         function closeSplash() {
