@@ -1,42 +1,70 @@
-<aside>
-        <div class="logo">
-            <a href="index.html">
-                <img src="https://fontmeme.com/permalink/260216/276cf78b.png" alt="spire-font" class="logo-img">
-            </a>
-        </div>
-        
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal | EaglerCraftX Suite</title>
+    <link rel="stylesheet" href="style.css?v=2">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <aside>
+        <a href="index.html" class="logo-text">TERMINAL<span>SUITE</span></a>
         <nav>
             <ul>
                 <li><a href="#" class="active">Dashboard</a></li>
                 <li><a href="#clients">Game Clients</a></li>
                 <li><a href="Eaglercraft-Binary-Tools.html">Binary Tools</a></li>
-                <li><a href="#nbt">NBT Editors</a></li>
-                <li><a href="#">Resources</a></li>
+                <li><a href="editor.html">NBT Editors</a></li>
             </ul>
         </nav>
-        
-        <div style="margin-top: auto; font-size: 10px; color: #161616; user-select: none;">
-            Your white-on-white text joke goes here. It's invisible unless highlighted.
-        </div>
+        <div class="secret-joke">Why don't skeletons fight each other? They don't have the guts.</div>
     </aside>
-
-    <style>
-        /* Updated Logo Styles */
-        .logo { 
-            margin-bottom: 40px; 
-            display: flex;
-            justify-content: center;
-        }
-
-        .logo-img {
-            max-width: 100%;
-            height: auto;
-            /* This turns the permalink image white to match the theme */
-            filter: brightness(0) invert(1); 
-            transition: transform 0.3s ease;
-        }
-
-        .logo-img:hover {
-            transform: scale(1.05);
-        }
-    </style>
+    <main>
+        <header>
+            <h1 style="font-size: 36px; margin-bottom: 10px;">Terminal Hub</h1>
+            <p style="color: var(--text-dim); margin-bottom: 30px;">Professional Eaglercraft Resource Suite.</p>
+            <input type="text" id="mainSearch" class="search-bar" placeholder="Search...">
+        </header>
+        <section class="category-section">
+            <h2 style="color: var(--accent); font-size: 12px; letter-spacing: 2px; margin-bottom: 20px;">CORE TOOLS</h2>
+            <div class="grid">
+                <a href="Eaglercraft-Binary-Tools.html" class="card" data-tags="binary tools epk">
+                    <div class="icon-box" style="border: 2px solid #3b82f6;"></div>
+                    <div class="card-info"><h3>Binary Tools</h3><p>Compile/Decompile EPK</p></div>
+                </a>
+                <a href="editor.html" class="card" data-tags="nbt editor">
+                    <div class="icon-box" style="border: 2px solid #10b981;"></div>
+                    <div class="card-info"><h3>Web NBT Editor</h3><p>Modify world data</p></div>
+                </a>
+            </div>
+        </section>
+        <section class="category-section" style="margin-top: 50px;">
+            <h2 style="color: var(--accent); font-size: 12px; letter-spacing: 2px; margin-bottom: 20px;">CLIENTS</h2>
+            <div class="grid">
+                <a href="#" class="card" data-tags="pixel client">
+                    <div class="icon-box" style="border: 2px solid #f59e0b;"></div>
+                    <div class="card-info"><h3>Pixel Client</h3><p>1.8.8 Performance</p></div>
+                </a>
+                <a href="#" class="card" data-tags="wurstx hack">
+                    <div class="icon-box" style="border: 2px solid #ef4444;"></div>
+                    <div class="card-info"><h3>WurstX</h3><p>Utility Client</p></div>
+                </a>
+            </div>
+        </section>
+    </main>
+    <script>
+        const searchInput = document.getElementById('mainSearch');
+        const cards = document.querySelectorAll('.card');
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            cards.forEach(card => {
+                const text = card.innerText.toLowerCase() + card.getAttribute('data-tags');
+                card.style.display = text.includes(query) ? 'flex' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>
